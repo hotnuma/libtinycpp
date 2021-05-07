@@ -1,0 +1,9 @@
+prefix=D:/DevFiles/libtinycpp
+
+Name: tinycpp
+Description: tinycpp
+Version: 1.0
+Cflags: -I${prefix}/lib
+Libs: -L${prefix}/build -ltinycpp
+
+

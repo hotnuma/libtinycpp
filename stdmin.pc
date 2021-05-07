@@ -1,0 +1,9 @@
+prefix=D:/DevFiles/libtinycpp
+
+Name: stdmin
+Description: stdmin
+Version: 1.0
+Cflags: -I${prefix}/lib
+Libs: -L${prefix}/build -lstdmin
+
+
