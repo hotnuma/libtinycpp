@@ -2,7 +2,7 @@
 #define CDIRENT_H
 
 #include "CString.h"
-#include "wdirent.h"
+#include "dirent.h"
 
 class CDirent
 {

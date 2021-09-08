@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "libconv.h"
+//#include "libconv.h"
 
 CFile::CFile()
 {
@@ -35,15 +35,7 @@ bool CFile::open(const char *filepath, const char *mode)
 {
     close();
 
-    //_mode = mode;
-
-    wchar_t* wfname = utf8ToWchar(filepath);
-    wchar_t* wmode = utf8ToWchar(mode);
-
-    _fp = _wfopen(wfname, wmode);
-
-    free(wfname);
-    free(wmode);
+    _fp = fopen(filepath, mode);
 
     return (_fp != nullptr);
 }
@@ -79,9 +71,7 @@ bool CFile::read(const char *filepath)
 
 bool CFile::write(const char *filepath, const CString &buffer)
 {
-    wchar_t* wbuff = utf8ToWchar(filepath);
-    FILE *fp = _wfopen(wbuff, L"wb");
-    free(wbuff);
+    FILE *fp = fopen(filepath, "wb");
 
     if (!fp)
         return false;

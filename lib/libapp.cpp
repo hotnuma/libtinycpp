@@ -1,63 +1,29 @@
 #include "libapp.h"
-#include <direct.h>
-#include <wtypes.h>
-#include <shellapi.h>
-#include <libloaderapi.h>
-#include "libconv.h"
 #include "libpath.h"
 
-bool isFirstInstance(const wchar_t *guid)
-{
-    ::SetLastError(NO_ERROR);
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <pwd.h>
+#include <wordexp.h>
 
-    ::CreateMutexW(NULL, false, guid);
-
-    if (::GetLastError() == ERROR_ALREADY_EXISTS)
-        return false;
-
-    return true;
-}
-
-CStringList getArguments(const wchar_t *cmdLine)
-{
-    if (!cmdLine)
-        cmdLine = ::GetCommandLineW();
-
-    CStringList result;
-
-    LPWSTR *wargs;
-    int num;
-
-    wargs = ::CommandLineToArgvW(cmdLine, &num);
-    if (!wargs)
-       return result;
-
-    for (int i = 0; i < num; ++i)
-    {
-        CString arg = wcharToCString(wargs[i]);
-        result.append(arg);
-    }
-
-    ::LocalFree(wargs);
-
-    return result;
-}
+#include "print.h"
 
 CString getApplicationPath()
 {
-    CString result(100);
+    int dest_len = 256;
 
-    int buffsize = MAX_PATH;
-    wchar_t *wbuff = (wchar_t*) malloc(buffsize * sizeof(wchar_t));
+    CString result(256);
 
-    int size = ::GetModuleFileNameW(0, wbuff, buffsize);
+    int ret = readlink("/proc/self/exe", result.data(), dest_len);
 
-    if (size == 0)
+    if (ret == -1)
+    {
+        result.clear();
         return result;
+    }
 
-    result = wcharToCString(wbuff);
-
-    free(wbuff);
+    result.terminate(ret);
 
     return result;
 }
@@ -84,20 +50,87 @@ CString getApplicationDir()
     return path;
 }
 
-CString getWindowsDirectory()
+CString getHomeDirectory()
 {
     CString result(100);
 
-    int buffsize = MAX_PATH;
-    wchar_t *wbuff = (wchar_t*) malloc(buffsize * sizeof(wchar_t));
+    const char *homedir = getenv("HOME");
 
-    UINT ret = ::GetWindowsDirectoryW(wbuff, MAX_PATH);
-    if (ret == 0 || ret > MAX_PATH)
-        return result;
+    if (homedir != nullptr)
+        result = homedir;
 
-    result = wcharToCString(wbuff);
+    return result;
+}
 
-    free(wbuff);
+CString getUserName()
+{
+    CString result;
+
+    uid_t uid = geteuid();
+
+    struct passwd *pw = getpwuid(uid);
+
+    if (pw)
+    {
+        result = pw->pw_name;
+    }
+
+    return result;
+}
+
+int pexec(const char *cmd)
+{
+    pid_t childpid = fork();
+
+    if (childpid < 0)
+    {
+        perror("failed to fork.");
+        return -1;
+    }
+
+    if (childpid == 0)
+    {
+        umask(0);
+        setsid();
+
+        if ((chdir("/")) < 0)
+            exit(-1);
+
+        // close out the standard file descriptors.
+        close(STDIN_FILENO);
+        close(STDOUT_FILENO);
+        close(STDERR_FILENO);
+
+        if (!cmd || !*cmd)
+            exit(-1);
+
+        wordexp_t p;
+        wordexp(cmd, &p, 0);
+
+        char **w = p.we_wordv;
+
+        if (execve(w[0], (char**) w, __environ) == -1)
+            perror("could not execve...");
+
+        wordfree(&p);
+
+        exit(0);
+    }
+
+    return 1;
+}
+
+
+#if 0
+
+bool isFirstInstance(const wchar_t *guid)
+{
+    return true;
+}
+
+CString getWindowsDirectory()
+{
+    CString result(100);
 
     return result;
 }
@@ -106,61 +139,9 @@ CStringList getLogicalDrives()
 {
     CStringList result;
 
-    DWORD bits = ::GetLogicalDrives();
-    char drive[] = "A:\\";
-
-    for (int i = 0; i < 26; ++i)
-    {
-        if (bits & (1 << i))
-        {
-            drive[0] = 'A' + i;
-            result.append(drive, 3);
-        }
-    }
-
     return result;
 }
 
-int uchdir(const char *directory)
-{
-    if (!directory)
-        return -1;
-
-    wchar_t *wdir = utf8ToWchar(directory);
-    int ret = _wchdir(wdir);
-    if (wdir)
-        free(wdir);
-
-    return ret;
-}
-
-int pexec(const char *cmd)
-{
-    STARTUPINFOW si = {0};
-    PROCESS_INFORMATION pi = {0};
-
-    wchar_t *wcmd = utf8ToWchar(cmd);
-
-    bool ret = ::CreateProcessW(nullptr,
-                                wcmd,
-                                nullptr,
-                                nullptr,
-                                true,
-                                0,
-                                nullptr,
-                                nullptr,
-                                &si,
-                                &pi);
-    if (ret)
-    {
-        ::CloseHandle(pi.hProcess);
-        ::CloseHandle(pi.hThread);
-    }
-
-    if (wcmd)
-        free(wcmd);
-
-    return ret;
-}
+#endif
 
 

@@ -3,7 +3,7 @@
 
 #include "CString.h"
 
-#define PATHSEP '\\'
+#define PATHSEP '/'
 
 bool pathIsSep(char c);
 

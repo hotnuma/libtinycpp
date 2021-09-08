@@ -1,7 +1,7 @@
 #include "CDirParser.h"
 #include "CDirent.h"
-#include "wdirent.h"
 #include "libpath.h"
+#include <sys/stat.h>
 
 #include "print.h"
 
@@ -50,7 +50,7 @@ bool CDirParser::open(const char *directory, int flags)
 
 //int g_count = 250;
 
-bool CDirParser::read(CString &filepath, int *type)
+bool CDirParser::read(CString &filepath, int* /*type*/)
 {
     readnext:
     CDirent *entry = (CDirent*) _list.last();
@@ -73,7 +73,7 @@ bool CDirParser::read(CString &filepath, int *type)
     const CString &currdir = entry->directory();
 
     // current item is a directory
-    if (S_ISDIR(rtype))
+    if (rtype == DT_DIR)
     {
         CString subdir = pathJoin(currdir, item);
 

@@ -94,8 +94,8 @@ public:
     operator const char*() const {return _buffer;}
     const char* c_str() const {return _buffer;}
     char* data() const {return _buffer;}
-    const int size() const {return _length;}
-    const int capacity() const {return _capacity;}
+    int size() const {return _length;}
+    int capacity() const {return _capacity;}
 
 private:
 

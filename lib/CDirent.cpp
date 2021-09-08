@@ -1,6 +1,7 @@
 #include "CDirent.h"
-#include "libconv.h"
+//#include "libconv.h"
 #include "libpath.h"
+#include <string.h>
 
 CDirent::CDirent()
 {
@@ -26,21 +27,16 @@ bool CDirent::open(const char *basedir)
     if (pathIsSep(_basedir.last()))
         _basedir.chop(1);
 
-    wchar_t *tmp = utf8ToWchar(basedir);
-    _dir = _wopendir(tmp);
-    free(tmp);
+    _dir = opendir(basedir);
 
-    if (!_dir)
-        return false;
-
-    return true;
+    return (_dir != nullptr);
 }
 
 void CDirent::close()
 {
     if (_dir)
     {
-        _wclosedir((_WDIR*) _dir);
+        closedir((DIR*) _dir);
         _dir = nullptr;
     }
 }
@@ -51,22 +47,20 @@ bool CDirent::read(CString &result, int *type)
         return false;
 
     readnext:
-    struct _wdirent *nextp = _wreaddir((_WDIR*) _dir);
+    struct dirent *nextp = readdir((DIR*) _dir);
 
     if (!nextp)
         return false;
 
     if (_skipdot
-        && (wcscmp(nextp->d_name, L".") == 0
-            || wcscmp(nextp->d_name, L"..") == 0))
+        && (strcmp(nextp->d_name, ".") == 0
+            || strcmp(nextp->d_name, "..") == 0))
         goto readnext;
 
-    char *tmp = wcharToUtf8(nextp->d_name);
-    result = tmp;
-    free(tmp);
+    result = nextp->d_name;
 
     if (type)
-        *type = nextp->d_type;
+        *type = (int) nextp->d_type;
 
     return true;
 }

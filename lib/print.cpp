@@ -10,6 +10,8 @@ void print(const char *fmt, ...)
     va_end(va);
 
     fprintf(stdout, "\n");
+    fflush(stdout);
+
 }
 
 

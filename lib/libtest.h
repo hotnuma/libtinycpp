@@ -1,9 +1,6 @@
 #ifndef LIBTINYTEST_H
 #define LIBTINYTEST_H
 
-void testInit();
-void testRelease();
-
 #define ASSERT(expression) \
     if (tt_assert((#expression), \
                   __FILE__, __LINE__, (expression) ? 0 : 1)) \

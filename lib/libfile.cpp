@@ -1,65 +1,26 @@
 #include "libfile.h"
-#include "libconv.h"
 #include <stdio.h>
 #include <sys/stat.h>
 
 bool dirExists(const char *fileName)
 {
-    struct _stat buffer;
-    wchar_t *wfpath = utf8ToWchar(fileName);
-    int result = _wstat(wfpath, &buffer);
-    free(wfpath);
+    struct stat buffer;
+    int result = stat(fileName, &buffer);
 
-    return (result == 0 && (buffer.st_mode & _S_IFDIR));
+    return (result == 0 && (buffer.st_mode & S_IFDIR));
 }
 
 bool fileExists(const char *fileName)
 {
-    struct _stat buffer;
-    wchar_t *wfpath = utf8ToWchar(fileName);
-    int result = _wstat(wfpath, &buffer);
-    free(wfpath);
+    struct stat buffer;
+    int result = stat(fileName, &buffer);
 
-    return (result == 0 && (buffer.st_mode & _S_IFREG));
+    return (result == 0 && (buffer.st_mode & S_IFREG));
 }
 
 bool fileRemove(const char *fileName)
 {
-    wchar_t* wbuff = utf8ToWchar(fileName);
-    int ret = _wremove(wbuff);
-    free(wbuff);
-
-    return (ret == 0);
-}
-
-#if 0
-bool fileRead(const char *fileName, CString &result)
-{
-    wchar_t* wbuff = utf8ToWchar(fileName);
-    FILE *fp = _wfopen(wbuff, L"rb");
-    free(wbuff);
-
-    if (!fp)
-        return false;
-
-    fseek(fp, 0, SEEK_END);
-    unsigned long size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    result.resize(size + 1);
-
-    if (fread(result.data(), 1, size, fp) != size)
-    {
-        result.clear();
-        fclose(fp);
-        return false;
-    }
-
-    fclose(fp);
-
-    result.terminate(size);
-
-    return true;
+    return (remove(fileName) == 0);
 }
 
 bool fileGetLine(char **start, CString &result)
@@ -172,6 +133,37 @@ bool fileGetLinePtr(char **start, char **result, int *length)
 
         ++p;
     }
+}
+
+
+#if 0
+bool fileRead(const char *fileName, CString &result)
+{
+    wchar_t* wbuff = utf8ToWchar(fileName);
+    FILE *fp = _wfopen(wbuff, L"rb");
+    free(wbuff);
+
+    if (!fp)
+        return false;
+
+    fseek(fp, 0, SEEK_END);
+    unsigned long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    result.resize(size + 1);
+
+    if (fread(result.data(), 1, size, fp) != size)
+    {
+        result.clear();
+        fclose(fp);
+        return false;
+    }
+
+    fclose(fp);
+
+    result.terminate(size);
+
+    return true;
 }
 
 bool fileWrite(const char *fileName, const CString &buffer)

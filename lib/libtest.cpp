@@ -1,15 +1,7 @@
 #include "libtest.h"
+
 #include <stdio.h>
-#include <wtypes.h>
 #include "CString.h"
-
-// Some MinGW/CYGWIN distributions don't define this.
-#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
-#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-#endif
-
-static HANDLE stdoutHandle;
-static DWORD outModeInit;
 
 #define TT_LINE1 "============================================================\n"
 #define TT_LINE2 "------------------------------------------------------------\n"
@@ -23,68 +15,6 @@ int         g_current_result = 0;
 
 int         g_passed = 0;
 int         g_failed = 0;
-
-char g_testroot[MAX_PATH] = {0};
-
-void _setupConsole()
-{
-    DWORD outMode = 0;
-    stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    if (stdoutHandle == INVALID_HANDLE_VALUE)
-        exit(GetLastError());
-
-    if (!GetConsoleMode(stdoutHandle, &outMode))
-        exit(GetLastError());
-
-    outModeInit = outMode;
-
-    // enable ANSI escape codes
-    outMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-
-    if (!SetConsoleMode(stdoutHandle, outMode))
-        exit(GetLastError());
-}
-
-void _restoreConsole()
-{
-    printf("\x1b[0m");
-
-    if (!SetConsoleMode(stdoutHandle, outModeInit))
-        exit(GetLastError());
-}
-
-void testInit()
-{
-    _setupConsole();
-
-    int buffsize = MAX_PATH;
-    wchar_t *wbuff = wcsalloc(buffsize);
-    if (!GetModuleFileNameW(0, wbuff, buffsize))
-        return;
-
-    int len = wcslen(wbuff);
-    wchar_t *p = wbuff + len;
-    while (p > wbuff)
-    {
-        if (*p == '\\')
-        {
-            *p = L'\0';
-            break;
-        }
-        --p;
-    }
-
-    size_t size = WideCharToMultiByte(CP_UTF8, 0, wbuff, -1, NULL, 0, NULL, NULL);
-    WideCharToMultiByte(CP_UTF8, 0, wbuff, -1, g_testroot, size, NULL, NULL);
-
-    free(wbuff);
-}
-
-void testRelease()
-{
-    _restoreConsole();
-}
 
 void tt_execute(const char *name, void (*test_function)())
 {

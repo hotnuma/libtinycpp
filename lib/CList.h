@@ -15,11 +15,12 @@ public:
     void setDeleteFunc(CDeleteFunc deleteFunc);
     void clear();
     void resize(int size);
-    const int capacity() const;
-    const int size() const;
+    int capacity() const;
+    int size() const;
     bool isEmpty() const;
 
     // read / find
+    void** data() {return _data;}
     void* operator[](int index);
     const void* at(int index);
     void* first();

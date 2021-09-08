@@ -1,82 +1,86 @@
 #include "libconv.h"
+
+#include <iconv.h>
+#include <errno.h>
 #include <stdlib.h>
-#include <stringapiset.h>
 
-wchar_t* utf8ToWchar(const char *str)
+bool iconvert(const char *str, size_t len,
+              char **outbuff, size_t *outsize,
+              const char *fromcharset, const char *tocharset)
 {
-    if (!str)
-        return nullptr;
+    iconv_t conv = iconv_open(tocharset, fromcharset);
+    if (conv == (iconv_t) -1)
+        return false;
 
-    int wsize = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
-    wchar_t* wbuff = (wchar_t*) malloc(wsize * sizeof(wchar_t));
-    MultiByteToWideChar(CP_UTF8, 0, str, -1, wbuff, wsize);
+    const char *p = str;
+    size_t inbytes_remaining = len;
 
-    return wbuff;
-}
+    char *outp = *outbuff;
+    size_t outbytes_remaining = *outsize - 1;
 
-char* wcharToUtf8(const wchar_t *wstr)
-{
-    if (!wstr)
-        return nullptr;
+    bool done = false;
+    bool have_error = false;
+    size_t err = 0;
 
-    int size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-    char* buff = (char*) malloc(size * sizeof(char));
-    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buff, size, NULL, NULL);
-
-    return buff;
-}
-
-CString wcharToCString(const wchar_t *wstr)
-{
-    CString buff;
-    if (!wstr)
-        return buff;
-
-    int size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-
-    if (size < 1)
-        return buff;
-
-    buff.resize(size);
-    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buff.data(), buff.capacity(), NULL, NULL);
-    buff.terminate(size - 1);
-
-    return buff;
-}
-
-CString strconv(const char *str, int from, int to)
-{
-    CString buff;
-    if (!str)
-        return buff;
-
-    // from -> wchar.
-
-    int size = MultiByteToWideChar(from, 0, str, -1, NULL, 0);
-
-    if (size < 1)
-        return buff;
-
-    wchar_t* wstr = (wchar_t*) malloc(size * sizeof(wchar_t));
-    MultiByteToWideChar(from, 0, str, -1, wstr, size);
-
-    // wchar -> to.
-
-    size = WideCharToMultiByte(to, 0, wstr, -1, NULL, 0, NULL, NULL);
-
-    if (size < 1)
+    while (!done && !have_error)
     {
-        free(wstr);
-        return buff;
+        err = iconv(conv, (char **)&p, &inbytes_remaining,
+                    &outp, &outbytes_remaining);
+
+        if (err == (size_t) -1)
+        {
+            switch (errno)
+            {
+                case EINVAL:
+                {
+                    // Incomplete text.
+                    done = true;
+                    break;
+                }
+                case E2BIG:
+                {
+                    size_t used = outp - *outbuff;
+                    *outsize *= 2;
+                    *outbuff = (char *) realloc(*outbuff, *outsize);
+                    if (*outbuff == nullptr)
+                    {
+                        iconv_close(conv);
+                        return false;
+                    }
+                    outp = *outbuff + used;
+                    outbytes_remaining = *outsize - used - 1;
+                    break;
+                }
+                case EILSEQ:
+                {
+                    have_error = true;
+                    break;
+                }
+                default:
+                {
+                    have_error = true;
+                    break;
+                }
+            }
+        }
+        else if (err > 0)
+        {
+            // err gives the number of replacement characters used.
+            have_error = true;
+        }
+        else
+        {
+            done = true;
+        }
     }
 
-    buff.resize(size);
-    WideCharToMultiByte(to, 0, wstr, -1, buff.data(), buff.capacity(), NULL, NULL);
-    buff.terminate(size - 1);
+    iconv_close(conv);
+    *outp = '\0';
 
-    free(wstr);
+    if (!have_error)
+        return true;
 
-    return buff;
+    return false;
 }
 
 

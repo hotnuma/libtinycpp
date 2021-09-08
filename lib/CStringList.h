@@ -17,8 +17,8 @@ public:
 
     // size.
     void clear();
-    const int capacity() const;
-    const int size() const;
+    int capacity() const;
+    int size() const;
     bool isEmpty() const;
     void resize(int size);
 

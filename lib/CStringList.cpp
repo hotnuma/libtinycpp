@@ -75,12 +75,12 @@ void CStringList::clear()
     _size = 0;
 }
 
-const int CStringList::capacity() const
+int CStringList::capacity() const
 {
     return _capacity;
 }
 
-const int CStringList::size() const
+int CStringList::size() const
 {
     return _size;
 }

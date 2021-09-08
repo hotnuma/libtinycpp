@@ -1,12 +1,11 @@
 #ifndef LIBCONV_H
 #define LIBCONV_H
 
-#include "CString.h"
+#include <stdio.h>
 
-wchar_t* utf8ToWchar(const char *str);
-char* wcharToUtf8(const wchar_t *wstr);
-CString wcharToCString(const wchar_t *wstr);
-CString strconv(const char *str, int from, int to);
+bool iconvert(const char *str, size_t len,
+              char **outbuff, size_t *outsize,
+              const char *fromcharset, const char *tocharset);
 
 #endif // LIBCONV_H
 

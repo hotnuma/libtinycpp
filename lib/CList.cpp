@@ -65,12 +65,12 @@ void CList::resize(int capacity)
     _data = (void**) realloc(_data, _capacity * sizeof(void*));
 }
 
-const int CList::capacity() const
+int CList::capacity() const
 {
     return _capacity;
 }
 
-const int CList::size() const
+int CList::size() const
 {
     return _size;
 }

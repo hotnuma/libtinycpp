@@ -68,15 +68,17 @@ char* stristr(const char *haystack, const char *needle)
  */
 char* strrstr(const char *haystack, const char *needle)
 {
-    char *r = NULL;
+    char *r = nullptr;
 
     if (!needle[0])
         return (char*)haystack + strlen(haystack);
 
-    while (1) {
-        char *p = strstr(haystack, needle);
+    while (1)
+    {
+        char *p = (char*) strstr(haystack, needle);
         if (!p)
             return r;
+
         r = p;
         haystack = p + 1;
     }

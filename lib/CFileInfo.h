@@ -2,6 +2,7 @@
 #define CFILEINFO_H
 
 #include <inttypes.h>
+#include <sys/stat.h>
 
 class CFileInfo
 {
@@ -10,20 +11,22 @@ public:
     CFileInfo(const char *filepath);
     CFileInfo();
     ~CFileInfo();
-    void close();
+    //void close();
 
     bool read(const char *filepath);
 
-    const char* path() {return _filepath;}
+    //const char* path() {return _filepath;}
     bool exists() {return _valid;}
 
-    uint64_t size();
+    long size();
     uint64_t mtime();
 
 private:
 
-    char *_filepath = nullptr;
-    void *_handle = (void*) -1;
+    //char *_filepath = nullptr;
+    //int _fd = -1;
+
+    struct stat _sb;
     bool _valid = false;
 
 };

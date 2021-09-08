@@ -11,6 +11,18 @@
 
 // edit -----------------------------------------------------------------------
 
+// https://stackoverflow.com/questions/4785381/replacement-for-ms-vscprintf-on-macos-linux
+
+int _vscprintf (const char * format, va_list pargs)
+{
+    int retval;
+    va_list argcopy;
+    va_copy(argcopy, pargs);
+    retval = vsnprintf(NULL, 0, format, argcopy);
+    va_end(argcopy);
+    return retval;
+}
+
 CString strFmt(const char *fmt, ...)
 {
     va_list va;
@@ -251,7 +263,7 @@ bool CString::contains(const char *str, bool sensitive) const
         }
         else
         {
-            if (strnicmp(p, str, len) == 0)
+            if (strncasecmp(p, str, len) == 0)
                 return true;
         }
 
@@ -267,7 +279,7 @@ bool CString::startsWith(const char *str, bool sensitive) const
     if (sensitive)
         return (strncmp(_buffer, str, len) == 0);
     else
-        return (strnicmp(_buffer, str, len) == 0);
+        return (strncasecmp(_buffer, str, len) == 0);
 }
 
 bool CString::endsWith(const char *str, bool sensitive) const
@@ -280,7 +292,7 @@ bool CString::endsWith(const char *str, bool sensitive) const
     if (sensitive)
         return (strncmp(part, str, len) == 0);
     else
-        return (strnicmp(part, str, len) == 0);
+        return (strncasecmp(part, str, len) == 0);
 }
 
 int CString::compare(const char *str, bool sensitive) const
@@ -293,7 +305,7 @@ int CString::compare(const char *str, bool sensitive) const
     if (sensitive)
         return strcmp(_buffer, str);
     else
-        return stricmp(_buffer, str);
+        return strcasecmp(_buffer, str);
 }
 
 bool CString::operator==(const char *str) const
@@ -371,7 +383,7 @@ void CString::replace(const char *before, const char *after, bool sensitive)
         }
         else
         {
-            found = (strnicmp(p, before, blen) == 0);
+            found = (strncasecmp(p, before, blen) == 0);
         }
 
         if (found)
@@ -484,7 +496,7 @@ CStringList CString::split(const char *sep, bool keepEmptyParts,
         }
         else
         {
-            if (strnicmp(c, sep, slen) == 0)
+            if (strncasecmp(c, sep, slen) == 0)
             {
                 len = c - start;
                 if (len > 0 || keepEmptyParts)
