@@ -1,35 +1,47 @@
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+//#define __STDC_FORMAT_MACROS
+//#include <inttypes.h>
 
-#include "CFileInfo.h"
-#include "libtest.h"
+#include "lib/libtest.h"
+
+#include "lib/CString.h"
+#include "lib/CFile.h"
+#include "lib/CFileInfo.h"
+#include "lib/libfile.h"
+
 #include <string.h>
-#include "CString.h"
 
-#include "print.h"
+#include "lib/print.h"
 
 //CFileInfo(const char *filepath);
 //~CFileInfo();
 //void close();
 
-extern char g_testroot[];
+#define _testfile "/tmp/tinycpp_cfileinfo.txt"
 
 void test_CFileInfo()
 {
-    CString fullpath = g_testroot;
-    fullpath += "\\abc.txt";
+    fileRemove(_testfile);
 
-    CFileInfo file;
-    bool ret = file.read(fullpath);
+    CFile file;
+    file.open(_testfile, "wb");
+    file << "bla";
+    file.flush();
+    file.close();
+
+    //CString fullpath = _testfile;
+    //fullpath += "\\abc.txt";
+
+    CFileInfo fileinfo;
+    bool ret = fileinfo.read(_testfile);
     ASSERT(ret);
-    ASSERT(file.exists());
-    ASSERT(strcmp(fullpath.c_str(), file.path()) == 0);
+    ASSERT(fileinfo.exists());
+    //ASSERT(strcmp(fullpath.c_str(), file.path()) == 0);
 
-    size_t size = file.size();
+    size_t size = fileinfo.size();
     ASSERT(size == 3);
 
-    uint64_t time = file.mtime();
-    ASSERT(time > 1514761200000);
+//    uint64_t time = fileinfo.mtime();
+//    ASSERT(time > 1514761200000);
 
 }
 

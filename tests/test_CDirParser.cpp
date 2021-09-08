@@ -7,14 +7,16 @@
 //CDirIterator(const char *directory, int flags = DF_DIRS | DF_FILES);
 //void close();
 
-extern char g_testroot[];
+//extern char _testroot[];
+
+#define _testroot "/tmp/tinycpp_tests"
 
 void test_CDirParser()
 {
     CDirParser dir;
     CString filepath;
 
-    bool ret = dir.open(g_testroot, CDP_SUBDIRS | CDP_DIRS);
+    bool ret = dir.open(_testroot, CDP_SUBDIRS | CDP_DIRS);
     ASSERT(ret);
 
     int count = 0;
@@ -23,9 +25,9 @@ void test_CDirParser()
         //print(filepath.c_str());
         ++count;
     }
-    ASSERT(count == 3);
+    ASSERT(count == 6);
 
-    ret = dir.open(g_testroot, CDP_SUBDIRS | CDP_FILES);
+    ret = dir.open(_testroot, CDP_SUBDIRS | CDP_FILES);
     ASSERT(ret);
 
     count = 0;
@@ -34,7 +36,7 @@ void test_CDirParser()
         //print(filepath.c_str());
         ++count;
     }
-    ASSERT(count == 7);
+    ASSERT(count == 4);
 
 }
 

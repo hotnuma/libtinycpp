@@ -1,14 +1,14 @@
-#include "CFile.h"
-#include "libtest.h"
-#include "libfile.h"
+#include "lib/CFile.h"
+#include "lib/libtest.h"
+#include "lib/libfile.h"
 
-extern char g_testroot[];
+#define _testfile "/tmp/tinycpp_cfile.txt"
 
 //~CFile();
 
 void test_CFile()
 {
-    CString filepath = strFmt("%s\\%s", g_testroot, "\\file.txt");
+    CString filepath = _testfile;
     fileRemove(filepath);
 
     CFile file;

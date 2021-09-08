@@ -1,17 +1,20 @@
 #include "libfile.h"
 #include "libtest.h"
-
-//#include "print.h"
-
-extern char g_testroot[];
-
-#define LIBFILECONTENT "bla\nble\nblie\n"
+#include <fcntl.h>
+#include <unistd.h>
 
 void test_libfile()
 {
-    ASSERT(dirExists(g_testroot));
+    ASSERT(dirExists("/tmp"));
 
-    CString filepath = strFmt("%s\\%s", g_testroot, "\\libfile.txt");
+    CString filepath = "/tmp/tinycpp_test.txt";
+
+    int fd = open(filepath, O_RDWR|O_CREAT, 0777);
+    if (fd != -1)
+        close(fd);
+
+    ASSERT(fileExists(filepath));
+
     fileRemove(filepath);
     ASSERT(!fileExists(filepath));
 

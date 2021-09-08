@@ -1,6 +1,8 @@
 #include "CString.h"
+
 #include "libtest.h"
-#include "string.h"
+#include <string.h>
+#include <wchar.h>
 
 #include "print.h"
 
@@ -24,13 +26,15 @@ void test_CString()
     ASSERT(MIN(2, 10) == 2);
     ASSERT(MAX(2, 10) == 10);
 
-    char *buff = stralloc(4);
-    strcpy(buff, "abc");
-    ASSERT(strcmp(buff, "abc") == 0);
+//    char *buff = stralloc(4);
+//    strcpy(buff, "abc");
+//    ASSERT(strcmp(buff, "abc") == 0);
+//    free(buff);
 
-    wchar_t *wbuff = wcsalloc(4);
-    wcscpy(wbuff, L"abc");
-    ASSERT(wcscmp(wbuff, L"abc") == 0);
+//    wchar_t *wbuff = wcsalloc(4);
+//    wcscpy(wbuff, L"abc");
+//    ASSERT(wcscmp(wbuff, L"abc") == 0);
+//    free(wbuff);
 
     CString strA(10);
     ASSERT(strA.isEmpty());

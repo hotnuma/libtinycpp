@@ -5,11 +5,11 @@
 
 #include "print.h"
 
-extern char g_testroot[];
+extern char _testroot[];
 
 void test_CProcess()
 {
-    uchdir(g_testroot);
+    uchdir(_testroot);
 
     CProcess process;
     process.start("cmd /c dir", PF_PIPEOUT);
