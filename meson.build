@@ -1,21 +1,49 @@
 project(
     'tinycpp',
-    'cpp',
-    default_options : ['cpp_std=c++11'],
+    ['cpp'],
+    version : '1.0',
+    license : 'LGPL-2.0',
+    default_options : [
+        'cpp_std=c++11',
+    ],
 )
 
-cpp_args = ['-DUNICODE', '-DPCRE_STATIC', '-Wall', '-fno-rtti', '-fno-exceptions', '-O2']
-link_args = ['-static', '-Wl,-s']
+cpp_args = [
+    '-Wall',
+    '-fno-rtti',
+    '-fno-exceptions',
+    '-O2',
+]
 
-stdmin = static_library(
-    'stdmin',
-    'lib/stdmin.cpp',
-    cpp_args : cpp_args,
+tinycpp_deps = [
+    dependency('libpcre'),
+]
+
+install_headers(
+    'lib/CDirent.h',
+    'lib/CDirParser.h',
+    'lib/CFile.h',
+    'lib/CFileInfo.h',
+    'lib/CIniFile.h',
+    'lib/CIniLine.h',
+    'lib/CIniSection.h',
+    'lib/CList.h',
+    'lib/CRegExp.h',
+    'lib/CString.h',
+    'lib/CStringList.h',
+    'lib/deletefunc.h',
+    'lib/fnmatch.h',
+    'lib/libapp.h',
+    'lib/libconv.h',
+    'lib/libfile.h',
+    'lib/libhtml.h',
+    'lib/libpath.h',
+    'lib/libstr.h',
+    'lib/libtest.h',
+    'lib/print.h',
 )
 
-pcre = dependency('pcre')
-
-tinycpp_sources = files(
+tinycpp_sources = [
     'lib/CDirent.cpp',
     'lib/CDirParser.cpp',
     'lib/CFile.cpp',
@@ -24,9 +52,7 @@ tinycpp_sources = files(
     'lib/CIniLine.cpp',
     'lib/CIniSection.cpp',
     'lib/CList.cpp',
-    'lib/CProcess.cpp',
     'lib/CRegExp.cpp',
-    'lib/CRegKey.cpp',
     'lib/CString.cpp',
     'lib/CStringList.cpp',
     'lib/fnmatch.cpp',
@@ -38,58 +64,58 @@ tinycpp_sources = files(
     'lib/libstr.cpp',
     'lib/libtest.cpp',
     'lib/print.cpp',
-    'lib/wdirent.cpp',
-)
+]
 
 tinycpp = static_library(
     'tinycpp',
-    dependencies : pcre,
     cpp_args : cpp_args,
+    dependencies : tinycpp_deps,
     sources : tinycpp_sources,
+    install : true,
 )
 
-install_data('tinycpp.pc', 'stdmin.pc', install_dir : '.')
+pkg_mod = import('pkgconfig')
+pkg_mod.generate(libraries : tinycpp,
+                 version : '1.0',
+                 name : 'libtinycpp',
+                 filebase : 'tinycpp',
+                 description : 'A simple C++ library.')
 
-executable(
-    'testcmd',
-    'main.cpp',
-    gui_app : false,
-    include_directories : 'lib',
-    dependencies : pcre,
-    cpp_args : cpp_args,
-    link_args : link_args,
-    link_with : [stdmin, tinycpp],
-)
-
-tinytest_sources = files(
+tinytest_sources = [
     'tests/test_CDirent.cpp',
     'tests/test_CDirParser.cpp',
     'tests/test_CFile.cpp',
     'tests/test_CFileInfo.cpp',
     'tests/test_CIniFile.cpp',
     'tests/test_CList.cpp',
-    'tests/test_CProcess.cpp',
-    'tests/test_CRegKey.cpp',
     'tests/test_CString.cpp',
     'tests/test_CStringList.cpp',
     'tests/test_fnmatch.cpp',
     'tests/test_libapp.cpp',
     'tests/test_libfile.cpp',
     'tests/test_libpath.cpp',
-    'tests/test_strconv.cpp',
     'tests/test_strfuncs.cpp',
     'test_main.cpp',
-)
+]
 
 exe = executable(
     'tinytest',
-    gui_app : false,
     include_directories : 'lib',
-    dependencies : pcre,
     cpp_args : cpp_args,
-    link_args : link_args,
     sources : tinytest_sources,
-    link_with : [stdmin, tinycpp],
+    link_with : [tinycpp],
+)
+
+testcmd_sources = [
+    'main.cpp',
+]
+
+executable(
+    'testcmd',
+    include_directories : 'lib',
+    cpp_args : cpp_args,
+    sources : testcmd_sources,
+    link_with : [tinycpp],
 )
 
 test('tinytest', exe)

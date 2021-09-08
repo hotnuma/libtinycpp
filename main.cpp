@@ -1,24 +1,12 @@
-#include "CDirParser.h"
-#include "CFile.h"
-#include "libpath.h"
-#include <string.h>
+#include <libapp.h>
 
 #include "print.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    const char *filepath = "D:\\Downloads\\test.py";
+    CString name = getUserName();
 
-    CFile file;
-
-    if (!file.read(filepath))
-        return false;
-
-    CString line;
-    while (file.getLine(line))
-    {
-        print(line);
-    }
+    print(name.c_str());
 
     return 0;
 }
