@@ -17,23 +17,23 @@
 
     Core String list.
 
+- CDirParser -
 - CDirent -
-- CDirIterator -
 - CFile -
 - CFileInfo -
 - CIniFile -
-- CProcess -
+- CIniLine -
+- CIniSection -
 - CRegExp -
-- CRegKey -
+- deletefunc -
 - fnmatch -
 - libapp -
+- libconv -
 - libfile -
-- libiconv -
+- libhtml -
 - libpath -
+- libstr -
 - libtest -
 - print -
-- strconv -
-- strfuncs -
-- wdirent -
 
 
