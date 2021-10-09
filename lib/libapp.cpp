@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <pwd.h>
 #include <wordexp.h>
@@ -118,6 +119,35 @@ int pexec(const char *cmd)
     }
 
     return 1;
+}
+
+CString argsToCString(int argc, char **argv)
+{
+    CString result(64);
+    result.terminate(1);
+    int size = 0;
+
+    for (int i = 0; i < argc; ++i)
+    {
+        char *arg = argv[i];
+        int len = strlen(arg);
+
+        if (len < 1)
+            continue;
+
+        result.resize(size + len + 2);
+        char *p = result.data() + size;
+        strcpy(p, arg);
+        size += len + 1;
+    }
+
+    if (size < 1)
+        return result;
+
+    result.resize(size + 1);
+    result.terminate(size);
+
+    return result;
 }
 
 

@@ -8,6 +8,8 @@ CString getApplicationDir();
 CString getHomeDirectory();
 CString getUserName();
 
+CString argsToCString(int argc, char **argv);
+
 int pexec(const char *cmd);
 
 #if 0
