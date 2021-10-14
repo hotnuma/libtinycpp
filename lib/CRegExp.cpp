@@ -1,5 +1,5 @@
-#include "string.h"
 #include "CRegExp.h"
+#include <string.h>
 
 CRegExp::CRegExp()
 {

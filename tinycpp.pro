@@ -6,10 +6,6 @@ CONFIG = c++11
 DEFINES =
 INCLUDEPATH =
 
-#INCLUDEPATH += \
-#    $$DEVFILES/build/pcre/include \
-#    lib
-
 HEADERS += \
     lib/CFile.h \
     lib/CFileInfo.h \
@@ -21,7 +17,6 @@ HEADERS += \
     lib/CRegKey.h \
     lib/CString.h \
     lib/CStringList.h \
-    lib/fnmatch.h \
     lib/libapp.h \
     lib/libconv.h \
     lib/libfile.h \
@@ -34,9 +29,13 @@ HEADERS += \
     lib/libhtml.h \
     lib/CDirParser.h \
     lib/CDirent.h \
-    lib/deletefunc.h
+    lib/deletefunc.h \
 
 SOURCES += \
+    lib/CRegExp.cpp \
+    lib/libstr.cpp \
+    lib/libhtml.cpp \
+    lib/CDirParser.cpp \
     lib/CDirent.cpp \
     lib/CFile.cpp \
     lib/CFileInfo.cpp \
@@ -48,7 +47,6 @@ SOURCES += \
     lib/CRegKey.cpp \
     lib/CString.cpp \
     lib/CStringList.cpp \
-    lib/fnmatch.cpp \
     lib/libapp.cpp \
     lib/libconv.cpp \
     lib/libfile.cpp \
@@ -59,6 +57,7 @@ SOURCES += \
     samples/file_read.cpp \
     samples/proc_cpuinfos.cpp \
     tests/test_CDirent.cpp \
+    tests/test_CDirParser.cpp \
     tests/test_CFile.cpp \
     tests/test_CFileInfo.cpp \
     tests/test_CIniFile.cpp \
@@ -71,18 +70,13 @@ SOURCES += \
     tests/test_libfile.cpp \
     tests/test_libpath.cpp \
     tests/test_strfuncs.cpp \
+    test_main.cpp \
     0Temp.cpp \
     main.cpp \
-    test_main.cpp \
-    lib/CRegExp.cpp \
-    lib/libstr.cpp \
-    lib/libhtml.cpp \
-    lib/CDirParser.cpp \
-    tests/test_CDirParser.cpp \
 
 DISTFILES += \
+    install.sh \
     meson.build \
     readme.txt \
-    install.sh \
 
 

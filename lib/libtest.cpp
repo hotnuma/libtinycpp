@@ -1,7 +1,7 @@
 #include "libtest.h"
 
-#include <stdio.h>
 #include "CString.h"
+#include <stdio.h>
 
 #define TT_LINE1 "============================================================\n"
 #define TT_LINE2 "------------------------------------------------------------\n"

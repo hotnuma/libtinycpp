@@ -1,6 +1,7 @@
 #include "libpath.h"
-#include <string.h>
+
 #include "libstr.h"
+#include <string.h>
 
 // Path separator.
 bool pathIsSep(char c)

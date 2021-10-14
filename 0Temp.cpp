@@ -1,164 +1,51 @@
 #if 0
 
-void CStringList::append(const CString &str)
+void closeHandlePtr(void **ptr)
 {
-    resize(_size+1);
-
-    _data[_size++] = new CString(str);
-}
-
-void CStringList::insert(int index, const CString &str)
-{
-    int length = str.size();
-
-    if (!_data || _size < 1 || index < 0 || index >= length)
-    {
-        append(str, length);
+    if (!ptr || !*ptr)
         return;
-    }
 
-    resize(_size + 1);
-
-    memmove(_data + index + 1, _data + index,
-            (_size - index) * sizeof(CString*));
-
-    _data[index] = new CString(str, length);
-
-    ++_size;
+    ::CloseHandle(*ptr);
+    *ptr = nullptr;
 }
 
-bool fileRead(const char *fileName, CStringList &result,
-              bool keepBlank = true);
-
-bool fileRead(const char *fileName, CStringList &list, bool keepBlank)
+static int _readPipe(void *handle, CString &outBuff)
 {
-    CString buffer;
+    if (!handle)
+        return -1;
 
-    if (!fileRead(fileName, buffer))
-        return false;
-
-    list.clear();
-
-    char *ptr = buffer.data();
-    char *result = nullptr;
-    int length = 0;
-
-    while (getLine(&ptr, &result, &length))
+    DWORD avail;
+    if (!::PeekNamedPipe(handle, 0, 0, 0, &avail, 0))
     {
-        if (!keepBlank && length == 0)
-            continue;
-
-        list.append(result, length);
+        //print("peek broken");
+        return 0;
     }
 
-    return true;
-}
+    if (!avail)
+        return 1;
 
-bool getLine(char **start, char **result, int *length)
-{
-    // start of line.
-    char *first = *start;
+    //print("peek = %i", avail);
 
-    // end of buffer ?
-    if (*first == '\0')
-        return false;
+    int length = outBuff.size();
+    outBuff.resize(length + avail + 1);
 
-    // set result.
-    *result = first;
+    char *buff = outBuff.data() + length;
+    DWORD numRead;
 
-    // search end of line.
-    char *p = first;
-
-    while (true)
+    if (!::ReadFile(handle, buff, avail, &numRead, 0))
     {
-        if (*p == '\r')
-        {
-            // eol.
-            if (length)
-                *length = p - first;
-
-            *p = '\0';
-
-            // skip.
-            if (*(p + 1) == '\n')
-                ++p;
-
-            // move to next line.
-            *start = ++p;
-
-            return true;
-        }
-        else if (*p == '\n')
-        {
-            // eol.
-            if (length)
-                *length = p - first;
-
-            *p = '\0';
-
-            // move to next line.
-            *start = ++p;
-
-            return true;
-        }
-        else if (*p == '\0')
-        {
-            // end of buffer.
-            if (length)
-                *length = p - first;
-
-            // move to the end.
-            *start = p;
-
-            return true;
-        }
-
-        ++p;
-    }
-}
-
-typedef bool (*LineProcessFunc) (const char *line, int length,
-                                 CString &result);
-
-bool fileEdit(LineProcessFunc func,
-              const char *inpath, const char *outpath = nullptr);
-
-bool fileEdit(LineProcessFunc func, const char *inpath, const char *outpath)
-{
-    if (!func || !inpath)
-        return false;
-
-    if (!outpath)
-        outpath = inpath;
-
-    CString buffer;
-
-    if (!fileRead(inpath, buffer))
-        return false;
-
-    char *p = buffer.data();
-    char *line = nullptr;
-    int length = 0;
-
-    CFile outfile;
-    if (!outfile.open(outpath, "wb"))
-        return false;
-
-    CString result;
-
-    while (getLine(&p, &line, &length))
-    {
-        result.clear();
-
-        if (func(line, length, result))
-        {
-            outfile << result;
-            outfile << "\n";
-        }
+        //print("read broken");
+        return 0;
     }
 
-    return true;
+    int num = (numRead < avail) ? numRead : avail;
+    outBuff.terminate(length + num);
+
+    //print("read = %i", numRead);
+
+    return 1;
 }
+
 
 #endif
 

@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-//#include "libconv.h"
 
 CFile::CFile()
 {
