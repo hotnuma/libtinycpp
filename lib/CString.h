@@ -30,6 +30,9 @@ inline wchar_t* wcsalloc(int size)
     return (wchar_t*) malloc(size * sizeof(wchar_t));
 }
 
+// size reserve
+char* getPtr(CString &buffer, int minchuck);
+
 // edit
 CString strFmt(const char *fmt, ...);
 CString strRepeat(const char *str, int count);

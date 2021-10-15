@@ -9,6 +9,34 @@
 
 #define CSTR_INITSIZE 16
 
+// size reserve ---------------------------------------------------------------
+
+char* getPtr(CString &buffer, int minchuck)
+{
+    int capacity = buffer.capacity();
+    int size = buffer.size();
+
+    if (minchuck < 1)
+        minchuck = 1024;
+
+    if (capacity < 1)
+    {
+        buffer.resize(minchuck * 2);
+        return buffer.data() + buffer.size();
+    }
+
+    while (capacity - (size + 1) < minchuck)
+    {
+        //print("while");
+
+        capacity *= 2;
+    }
+
+    buffer.resize(capacity);
+
+    return buffer.data() + buffer.size();
+}
+
 // edit -----------------------------------------------------------------------
 
 // https://stackoverflow.com/questions/4785381/replacement-for-ms-vscprintf-on-macos-linux
