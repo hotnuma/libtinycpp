@@ -3,16 +3,15 @@
 
 #include "CString.h"
 
-#define PF_NONE     0x00
-#define PF_PIPEIN   0x01
-#define PF_PIPEOUT  0x02
-#define PF_PIPEERR  0x04
-#define PF_MERGEERR 0x08
+#define CPF_NONE     0x00
+#define CPF_PIPEIN   0x01
+#define CPF_PIPEOUT  0x02
+#define CPF_PIPEERR  0x04
+//#define CPF_MERGEERR 0x08
 
-#define PH_READ     0
-#define PH_WRITE    1
-
-void closeHandlePtr(void **ptr);
+#define CPH_INVALID    -1
+#define CPH_OUT         0
+#define CPH_IN          1
 
 class CProcess
 {
@@ -21,8 +20,7 @@ public:
     CProcess();
     ~CProcess();
 
-    void setInput(const char *instr);
-    bool start(const char *command, int flags = PF_NONE);
+    bool start(const char *cmd, int flags = CPF_NONE);
     int exitStatus() {return _exitCode;}
 
     CString inBuff;
@@ -31,16 +29,12 @@ public:
 
 private:
 
-    void _writeToPipe();
-    void _waitForFinished(void *handle);
-    bool _readAll();
+    //int _flags = CPF_NONE;
 
-    void *_inHandles[2] = {0, 0};
-    void *_outHandles[2] = {0, 0};
-    void *_errHandles[2] = {0, 0};
+    int _inPipe[2] = {CPH_INVALID};
+    int _outPipe[2] = {CPH_INVALID};
+    int _errPipe[2] = {CPH_INVALID};
 
-    int _flags = PF_NONE;
-    const char *_instr = nullptr;
     long unsigned int _exitCode = 0;
 
 };
