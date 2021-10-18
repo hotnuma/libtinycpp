@@ -21,7 +21,7 @@ public:
     ~CProcess();
 
     bool start(const char *cmd, int flags = CPF_NONE);
-    int exitStatus() {return _exitCode;}
+    int exitStatus() {return _exitStatus;}
 
     CString inBuff;
     CString outBuff;
@@ -35,7 +35,7 @@ private:
     int _outPipe[2] = {CPH_INVALID};
     int _errPipe[2] = {CPH_INVALID};
 
-    long unsigned int _exitCode = 0;
+    int _exitStatus = -1;
 
 };
 

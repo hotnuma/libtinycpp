@@ -45,7 +45,7 @@ bool CProcess::start(const char *cmd, int flags)
 
     bool outpipe = flags & CPF_PIPEOUT;
 
-    _exitCode = -1;
+    _exitStatus = -1;
 
     // Create a pipe for the child process's STDOUT.
     if (outpipe)
@@ -96,7 +96,9 @@ bool CProcess::start(const char *cmd, int flags)
         outBuff.resize(CHUNCK * 2);
     }
 
-    while (waitpid(pid, nullptr, WNOHANG) != pid)
+    int status = -1;
+
+    while (waitpid(pid, &status, WNOHANG) != pid)
     {
         timeout.tv_sec = 5;
         timeout.tv_usec = 0;
@@ -118,6 +120,11 @@ bool CProcess::start(const char *cmd, int flags)
         close(_outPipe[CPH_OUT]);
 
     wordfree(&we);
+
+    if (WIFEXITED(status))
+        _exitStatus = WEXITSTATUS(status);
+
+    //print("status = %d", _exitCode);
 
     return true;
 }
