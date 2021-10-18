@@ -1,31 +1,35 @@
-#include "lib/CProcess.h"
+#include <CRegExp.h>
+#include <string.h>
 
-#include "print.h"
+#include <print.h>
 
 int main()
 {
-    CString cmd = "/home/hotnuma/testout";
+    const char *str = "01,bla,02,blé,03,blie";
 
-    CProcess process;
-    if (!process.start(cmd, CPF_PIPEOUT))
+    CRegExp rx("(\\w+)");
+
+    CString output = str;
+    int pos = 0;
+
+    while ((pos = rx.indexIn(str, pos)) != -1)
     {
-        print("start failed");
+        CString part = rx.cap(0);
 
-        return -1;
+        //print("count = %i", rx.captureCount());
+
+        print(part);
+
+        output += part;
+        output += "\n";
+
+        if (strcmp(part.c_str(), "blé") == 0)
+        {
+            print("found");
+        }
+
+        pos += rx.matchedLength();
     }
-
-    int status = process.exitStatus();
-
-    if (status != 0)
-    {
-        print("program returned : %d", status);
-
-        return -1;
-    }
-
-    CString result = process.outBuff;
-
-    print(result);
 
     return 0;
 }

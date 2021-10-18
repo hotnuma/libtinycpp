@@ -25,7 +25,7 @@ public:
 private:
 
     pcre *_re = nullptr;
-    int _flags = PCRE_MULTILINE | PCRE_UCP
+    int _flags = PCRE_MULTILINE | PCRE_UTF8 | PCRE_UCP
                  | PCRE_DOTALL | PCRE_NEWLINE_ANYCRLF;
 
     const char *_instr = nullptr;
