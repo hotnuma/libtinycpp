@@ -37,6 +37,118 @@ char* getPtr(CString &buffer, int minchuck)
     return buffer.data() + buffer.size();
 }
 
+bool strGetLine(char **start, CString &result)
+{
+    // start of line.
+    char *first = *start;
+
+    // end of buffer ?
+    if (*first == '\0')
+        return false;
+
+    // search end of line.
+    char *p = first;
+
+    while (1)
+    {
+        if (*p == '\r')
+        {
+            result.clear();
+            result.append(first, p - first);
+            //*result = first;
+            //*length = p - first;
+
+            // skip.
+            if (*(p + 1) == '\n')
+                ++p;
+
+            // move to next line.
+            *start = ++p;
+
+            return true;
+        }
+        else if (*p == '\n')
+        {
+            result.clear();
+            result.append(first, p - first);
+            //*result = first;
+            //*length = p - first;
+
+            // move to next line.
+            *start = ++p;
+
+            return true;
+        }
+        else if (*p == '\0')
+        {
+            result.clear();
+            result.append(first, p - first);
+            //*result = first;
+            //*length = p - first;
+
+            // move to the end.
+            *start = p;
+
+            return true;
+        }
+
+        ++p;
+    }
+}
+
+bool strGetLinePtr(char **start, char **result, int *length)
+{
+    // start of line.
+    char *first = *start;
+
+    // end of buffer ?
+    if (*first == '\0')
+        return false;
+
+    // search end of line.
+    char *p = first;
+
+    while (1)
+    {
+        if (*p == '\r')
+        {
+            *result = first;
+            *length = p - first;
+
+            // skip.
+            if (*(p + 1) == '\n')
+                ++p;
+
+            // move to next line.
+            *start = ++p;
+
+            return true;
+        }
+        else if (*p == '\n')
+        {
+            *result = first;
+            *length = p - first;
+
+            // move to next line.
+            *start = ++p;
+
+            return true;
+        }
+        else if (*p == '\0')
+        {
+            *result = first;
+            *length = p - first;
+
+            // move to the end.
+            *start = p;
+
+            return true;
+        }
+
+        ++p;
+    }
+}
+
 // edit -----------------------------------------------------------------------
 
 // https://stackoverflow.com/questions/4785381/replacement-for-ms-vscprintf-on-macos-linux

@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <wordexp.h>
 
-#include <print.h>
+//#include <print.h>
 
 #define CHUNCK 1024
 
@@ -19,12 +19,12 @@ int _readPipe(int fd, CString &buffer)
 
     if (nb_read < 1)
     {
-        print("nothing to read");
+        //print("nothing to read");
 
         return 0;
     }
 
-    print("%d bytes read", nb_read);
+    //print("%d bytes read", nb_read);
     buffer.terminate(buffer.size() + nb_read);
 
     return nb_read;
@@ -52,7 +52,7 @@ bool CProcess::start(const char *cmd, int flags)
     {
         if (pipe(_outPipe) == -1)
         {
-            perror("pipe failed\n");
+            //perror("pipe failed\n");
 
             return false;
         }
@@ -65,10 +65,11 @@ bool CProcess::start(const char *cmd, int flags)
 
     if (pid < 0)
     {
-        perror("fork failed\n");
+        //perror("fork failed\n");
 
         wordfree(&we);
-        return 2;
+
+        return false;
     }
     else if (pid == 0)
     {
@@ -80,8 +81,9 @@ bool CProcess::start(const char *cmd, int flags)
 
         char **w = we.we_wordv;
 
-        if (execvp(w[0], (char**) w) == -1)
-            perror("exec failed...");
+        execvp(w[0], (char**) w);
+
+        //perror("exec failed...");
 
         exit(EXIT_FAILURE);
     }

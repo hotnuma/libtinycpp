@@ -10,9 +10,6 @@ CFile::CFile()
 CFile::~CFile()
 {
     close();
-
-//    if (_buffer)
-//        delete _buffer;
 }
 
 void CFile::flush()
@@ -171,6 +168,10 @@ bool CFile::getLine(CString &result)
     if (!_curr)
         return false;
 
+    return strGetLine(&_curr, result);
+
+#if 0
+
     // start of line.
     char *first = _curr;
 
@@ -220,6 +221,8 @@ bool CFile::getLine(CString &result)
 
         ++p;
     }
+#endif
+
 }
 
 

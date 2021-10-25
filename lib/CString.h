@@ -33,6 +33,9 @@ inline wchar_t* wcsalloc(int size)
 // size reserve
 char* getPtr(CString &buffer, int minchuck);
 
+bool strGetLine(char **start, CString &result);
+bool strGetLinePtr(char **start, char **result, int *length);
+
 // edit
 CString strFmt(const char *fmt, ...);
 CString strRepeat(const char *str, int count);

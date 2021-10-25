@@ -34,6 +34,7 @@ bool CIniFile::open(const char *filepath)
 
     CIniSection *section = nullptr;
     int count = 0;
+
     while (file.getLinePtr(&result, &length))
     {
         // skip empty lines.
