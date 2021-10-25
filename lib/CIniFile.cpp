@@ -27,15 +27,14 @@ bool CIniFile::open(const char *filepath)
 
     _filepath = filepath;
 
-    //char *ptr = file.data();
-
+    char *ptr = file.data();
     char *result = nullptr;
     int length = 0;
 
     CIniSection *section = nullptr;
     int count = 0;
 
-    while (file.getLinePtr(&result, &length))
+    while (strGetLinePtr(&ptr, &result, &length))
     {
         // skip empty lines.
         //if (length == 0)
@@ -43,7 +42,7 @@ bool CIniFile::open(const char *filepath)
 
         ++count;
 
-        *(result + length) = '\0';
+        result[length] = '\0';
 
         char *sec = getSection(result, length);
         if (count == 1 && !sec)

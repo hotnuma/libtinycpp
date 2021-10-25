@@ -17,18 +17,18 @@ public:
     void write(const char *str);
     void operator<<(const char *str);
 
-    bool getLinePtr(char **result, int *length);
+    //bool getLinePtr(char **result, int *length);
     bool getLine(CString &result);
 
     void flush();
     void close();
 
-    operator const char*() const {return _buffer.c_str();}
     CString& buffer() {return _buffer;}
+    operator const char*() const {return _buffer.c_str();}
 
-    //const char* c_str() const {return _buffer;}
-    //char* data() const {return _buffer;}
-    //const int size() const {return _length;}
+    const char* c_str() const {return _buffer.c_str();}
+    char* data() const {return _buffer.data();}
+    int size() const {return _buffer.size();}
 
     static bool write(const char *filepath, const CString &buffer);
 

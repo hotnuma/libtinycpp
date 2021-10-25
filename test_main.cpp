@@ -16,7 +16,6 @@ void test_CFile();
 void test_CFileInfo();
 void test_CIniFile();
 //void test_CProcess();
-void test_fnmatch();
 void test_libapp();
 void test_libfile();
 void test_libpath();
@@ -57,7 +56,6 @@ int main()
     RUN(test_CList);
     RUN(test_CStringList);
 
-    RUN(test_fnmatch);
     RUN(test_libapp);
     RUN(test_libfile);
     RUN(test_libpath);

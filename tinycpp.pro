@@ -1,7 +1,7 @@
 TEMPLATE = app
 CONFIG = console c++11
-#TARGET = tinytest
-TARGET = testcmd
+TARGET = tinytest
+#TARGET = testcmd
 CONFIG = c++11
 DEFINES =
 INCLUDEPATH =
@@ -65,7 +65,6 @@ SOURCES += \
     tests/test_CProcess.cpp \
     tests/test_CString.cpp \
     tests/test_CStringList.cpp \
-    tests/test_fnmatch.cpp \
     tests/test_libapp.cpp \
     tests/test_libfile.cpp \
     tests/test_libpath.cpp \

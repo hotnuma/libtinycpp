@@ -107,6 +107,7 @@ void CFile::operator<<(const char *str)
     fwrite(str, strlen(str), 1, _fp);
 }
 
+#if 0
 bool CFile::getLinePtr(char **result, int *length)
 {
     if (!_curr)
@@ -162,6 +163,7 @@ bool CFile::getLinePtr(char **result, int *length)
         ++p;
     }
 }
+#endif
 
 bool CFile::getLine(CString &result)
 {

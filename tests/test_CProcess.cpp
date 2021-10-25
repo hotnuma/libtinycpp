@@ -5,14 +5,14 @@
 
 #include "print.h"
 
-extern char _testroot[];
+//extern char _testroot[];
 
 void test_CProcess()
 {
-    uchdir(_testroot);
+    //uchdir(_testroot);
 
     CProcess process;
-    process.start("cmd /c dir", PF_PIPEOUT);
+    process.start("cmd /c dir", CPF_PIPEOUT);
     ASSERT(process.outBuff.contains("strconv.txt"));
 
 }
