@@ -1,41 +1,48 @@
-#include "libpath.h"
 #include "libtest.h"
-#include <string.h>
+#include "libpath.h"
 
-#include "print.h"
+#include <string.h>
 
 // untested
 //bool pathCanonicalize(char *path, int *len)
 
-//extern char _testroot[];
-
 void test_libpath()
 {
-    CString filepath(30);
+    CString filepath(64);
     const char *part = nullptr;
 
-    filepath = "/dot.trap/bla";
-    part = pathLastSep(filepath);
-    ASSERT(strcmp(part+1, "bla") == 0);
+    filepath = "/a/b.c/file";
 
     part = pathExt(filepath);
     ASSERT(!part);
 
-    filepath = "/a/b/c/fileV1.0.txt";
+    filepath = "/a/b.c/file.tar.gz";
 
     part = pathExt(filepath);
-    ASSERT(strcmp(part, ".txt") == 0);
+    ASSERT(strcmp(part, ".tar.gz") == 0);
+
+    part = pathSep(filepath);
+    ASSERT(strcmp(part, "/file.tar.gz") == 0);
 
     CString result;
 
     result = pathDirName(filepath);
-    ASSERT(result.compare("/a/b/c") == 0);
+    ASSERT(result.compare("/a/b.c") == 0);
 
     result = pathBaseName(filepath);
-    ASSERT(result.compare("fileV1.0.txt") == 0);
+    ASSERT(result.compare("file.tar.gz") == 0);
 
-    //result = pathFileName(filepath);
-    //ASSERT(result.compare("fileV1.0.txt") == 0);
+    result = pathJoin("/", "bla");
+    ASSERT(result.compare("/bla") == 0);
+
+    result = pathJoin("", "bla");
+    ASSERT(result.compare("bla") == 0);
+
+    result = pathJoin("/bla", "blie");
+    ASSERT(result.compare("/bla/blie") == 0);
+
+    result = pathJoin("/bla///", "///blie");
+    ASSERT(result.compare("/bla/blie") == 0);
 
 }
 

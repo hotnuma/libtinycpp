@@ -24,7 +24,7 @@ bool CDirent::open(const char *basedir)
 
     _basedir = basedir;
 
-    if (pathIsSep(_basedir.last()))
+    if (_basedir.last() == '/')
         _basedir.chop(1);
 
     _dir = opendir(basedir);

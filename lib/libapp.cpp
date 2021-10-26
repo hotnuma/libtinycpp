@@ -15,7 +15,7 @@ CString getApplicationPath()
 {
     int dest_len = 256;
 
-    CString result(256);
+    CString result(dest_len);
 
     int ret = readlink("/proc/self/exe", result.data(), dest_len);
 
@@ -33,23 +33,28 @@ CString getApplicationPath()
 CString getApplicationDir()
 {
     CString path = getApplicationPath();
-    int len = path.size();
 
-    if (len < 1)
+    char *p = path.data();
+    char *sep = nullptr;
+
+    while (1)
     {
-        path.clear();
-        return path;
+        if (*p == '/')
+        {
+            sep = p;
+        }
+        else if (*p == '\0')
+        {
+            if (sep)
+                path.terminate(sep - path.data());
+            else
+                path.clear();
+
+            return path;
+        }
+
+        ++p;
     }
-
-    char *str = path.data();
-    const char *last = pathLastSep(str, len);
-
-    if (last)
-        path.terminate(last - str);
-    else
-        path.clear();
-
-    return path;
 }
 
 CString getHomeDirectory()

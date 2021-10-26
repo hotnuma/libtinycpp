@@ -4,7 +4,7 @@ TARGET = tinytest
 #TARGET = testcmd
 CONFIG = c++11
 DEFINES =
-INCLUDEPATH =
+INCLUDEPATH = lib
 
 HEADERS += \
     lib/CDirent.h \

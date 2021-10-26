@@ -3,73 +3,81 @@
 #include "libstr.h"
 #include <string.h>
 
-// Path separator.
-bool pathIsSep(char c)
+const char* pathSep(const char *path)
 {
-#ifdef _WIN32
-    return c == '/' || c == '\\';
-#else
-    return c == '/';
-#endif
+    if (!path)
+        return nullptr;
+
+    const char *sep = nullptr;
+
+    while (1)
+    {
+        if (*path == '/')
+        {
+            sep = path;
+        }
+        else if (*path == '\0')
+        {
+            return sep;
+        }
+
+        ++path;
+    }
 }
 
-const char* pathLastSep(const char *str, int len)
+const char* pathExt(const char *path)
 {
-    if (!str)
+    path = pathSep(path);
+
+    if (!path || path[1] == '\0')
         return nullptr;
 
-    if (len < 0)
-        len = strlen(str);
+    ++path;
 
-    if (len < 1)
-        return nullptr;
+    // hidden file.
+    if (*path == '.')
+        ++path;
 
-    const char *last = str + len - 1;
-
-    while (last > str)
+    while (*path)
     {
-        if (pathIsSep(*last))
-            return last;
+        if (*path == '.')
+            return path;
 
-        --last;
+        ++path;
     }
 
     return nullptr;
 }
 
-// File names extensions.
-const char* pathExt(const char *str)
-{
-    if (!str)
-        return nullptr;
-
-    const char *dot = nullptr;
-    while (*str)
-    {
-        if (pathIsSep(*str))
-        {
-            dot = nullptr;
-        }
-        else if (*str == '.' /*&& !dot*/)
-        {
-            dot = str;
-        }
-
-        ++str;
-    }
-
-    return dot;
-}
-
 CString pathDirName(const char *path)
 {
-    int length = 0;
-    const char *last = pathLastSep(path);
+    CString result(128);
 
-    if (last)
-        length = last - path;
+    if (!path || !*path)
+        return result;
 
-    return CString(path, length);
+    const char *p = path;
+    const char *sep = nullptr;
+
+    while (1)
+    {
+        if (*p == '/')
+        {
+            sep = p;
+        }
+        else if (*p == '\0')
+        {
+            if (sep)
+            {
+                int len = sep - path;
+                result.append(path, len);
+            }
+
+            return result;
+        }
+
+        ++p;
+    }
 }
 
 CString pathBaseName(const char *path)
@@ -90,8 +98,7 @@ CString pathBaseName(const char *path)
         }
         else if (*p == '\0')
         {
-            int length = p - path;
-            result.append(path, length);
+            result.append(path, p - path);
 
             return result;
         }
@@ -100,93 +107,39 @@ CString pathBaseName(const char *path)
     }
 }
 
-int _strdirlen(const char *str)
-{
-    if (!str)
-        return 0;
-
-    const char *end = nullptr;
-    const char *c = str;
-
-    while (*c)
-    {
-        if (!pathIsSep(*c))
-            end = c;
-
-        ++c;
-    }
-
-    if (!end)
-        return 0;
-
-    return end + 1 - str;
-}
-
-const char* _strskipsep(const char *str)
-{
-    if (!str)
-        return nullptr;
-
-    const char *c = str;
-
-    while (*c)
-    {
-        if (!pathIsSep(*c))
-            return c;
-
-        ++c;
-    }
-
-    return nullptr;
-}
-
-char _strgetsep(const char *str)
-{
-    char sep = PATHSEP;
-
-    if (!str)
-        return sep;
-
-    while (*str)
-    {
-        if (pathIsSep(*str))
-            return *str;
-
-        ++str;
-    }
-
-    return sep;
-}
-
 CString pathJoin(const char *dir, const char *file)
 {
-    CString result(100);
+    CString result(128);
 
-    int dirlen = _strdirlen(dir);
+    if (!dir || !file)
+        return result;
+
+    int dirlen = strlen(dir);
 
     if (!dirlen)
     {
-        result = file;
+        result.append(file);
         return result;
     }
 
-    const char *fstart = _strskipsep(file);
-    int filelen = 0;
+    // strip last seps
+    while (dirlen > 0 && dir[dirlen - 1] == '/')
+        --dirlen;
 
-    if (fstart)
-        filelen = strlen(fstart);
+    // strip first seps
+    while (*file == '/')
+        ++file;
 
-    char sep = _strgetsep(dir);
+    int filelen = strlen(file);
 
-    int length = dirlen + 1 + filelen;
+    result.resize(dirlen + filelen + 2);
 
-    result.resize(length + 1);
     result.append(dir, dirlen);
 
-    if (fstart && filelen > 0)
+    if (filelen > 0)
     {
-        result.append(sep);
-        result.append(fstart);
+        result.append('/');
+        result.append(file);
     }
 
     return result;
@@ -198,7 +151,7 @@ int _count(const char *str)
 
     while (*str)
     {
-        if (pathIsSep(*str))
+        if (*str == '/')
             ++ret;
 
         ++str;
@@ -215,7 +168,7 @@ int pathCmp(const char *s1, const char *s2)
     if (n1 != n2)
         return n2 - n1;
 
-    return strcasecmp(s1, s2);
+    return strcmp(s1, s2);
 }
 
 bool pathCanonicalize(char *path, int *len)
@@ -232,38 +185,23 @@ bool pathCanonicalize(char *path, int *len)
     const char *src = start;
     const char *end = start + *len;
 
-    if (pathIsSep(*src))
+    if (*src == '/')
     {
-#ifdef _WIN32
-
-        // network path starts with //
-        if (*len > 1 && pathIsSep(*(src + 1)))
-        {
-            src += 2;
-            dst += 2;
-        }
-        else
-        {
-            ++src;
-            ++dst;
-        }
-#else
         ++src;
         ++dst;
-#endif
     }
 
     while (src < end)
     {
         if (*src == '.')
         {
-            if (src + 1 == end || pathIsSep(src[1]))
+            if (src + 1 == end || src[1] == '/')
             {
                 // '.' component; eliminate.
                 src += 2;
                 continue;
             }
-            else if (src[1] == '.' && (src + 2 == end || pathIsSep(src[2])))
+            else if (src[1] == '.' && (src + 2 == end || src[2] == '/'))
             {
                 // '..' component.  Back up if possible.
                 if (count > 0)
@@ -282,7 +220,7 @@ bool pathCanonicalize(char *path, int *len)
             }
         }
 
-        if (pathIsSep(*src))
+        if (*src == '/')
         {
             src++;
             continue;
@@ -294,7 +232,7 @@ bool pathCanonicalize(char *path, int *len)
         parts[count] = dst;
         ++count;
 
-        while (src != end && !pathIsSep(*src))
+        while (src != end && *src != '/')
             *dst++ = *src++;
 
         *dst++ = *src++;  // Copy '/' or final \0 character as well.
