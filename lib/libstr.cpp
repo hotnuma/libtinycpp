@@ -21,6 +21,47 @@ CString strCurrentTime(const char *fmt)
     return result;
 }
 
+bool strGetPart(char **start, char **result, int *length)
+{
+    // start of line.
+    char *first = *start;
+
+    while(isspace(*first)) ++first;
+
+    // end of buffer ?
+    if (*first == '\0')
+        return false;
+
+    // search end of line.
+    char *p = first;
+
+    while (1)
+    {
+        if (isspace(*p))
+        {
+            *result = first;
+            *length = p - first;
+
+            // move to the end.
+            *start = ++p;
+
+            return true;
+        }
+        else if (*p == '\0')
+        {
+            *result = first;
+            *length = p - first;
+
+            // move to the end.
+            *start = p;
+
+            return true;
+        }
+
+        ++p;
+    }
+}
+
 char* stristr(const char *haystack, const char *needle)
 {
     char *pptr  = (char *) needle;   /* Pattern to search for    */

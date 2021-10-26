@@ -9,6 +9,7 @@
 #define STREOL_CR 3
 
 CString strCurrentTime(const char *fmt);
+bool strGetPart(char **start, char **result, int *length);
 
 char* stristr(const char *haystack, const char *needle);
 char* strrstr(const char *haystack, const char *needle);

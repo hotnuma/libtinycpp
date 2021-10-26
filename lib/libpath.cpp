@@ -74,37 +74,48 @@ CString pathDirName(const char *path)
 
 CString pathBaseName(const char *path)
 {
-    const char *dot = pathExt(path);
+    CString result(64);
 
-    int len;
+    if (!path)
+        return result;
 
-    if (dot)
-        len = dot - path;
-    else
-        len = strlen(path);
+    const char *p = path;
 
-    CString result(len + 1);
-    result.append(path, len);
-
-    return result;
-}
-
-CString pathFileName(const char *path)
-{
-    int length = strlen(path);
-    const char *str = path + length;
-
-    const char *last = pathLastSep(path);
-
-    if (last && last < str)
+    while (1)
     {
-        ++last;
-        length = strlen(last);
-        str = last;
-    }
+        if (*p == '/')
+        {
+            path = ++p;
+            continue;
+        }
+        else if (*p == ' ' || *p == '\0')
+        {
+            int length = p - path;
+            result.append(path, length);
 
-    return CString(str, length);
+            return result;
+        }
+
+        ++p;
+    }
 }
+
+//CString pathFileName(const char *path)
+//{
+//    int length = strlen(path);
+//    const char *str = path + length;
+
+//    const char *last = pathLastSep(path);
+
+//    if (last && last < str)
+//    {
+//        ++last;
+//        length = strlen(last);
+//        str = last;
+//    }
+
+//    return CString(str, length);
+//}
 
 int _strdirlen(const char *str)
 {
