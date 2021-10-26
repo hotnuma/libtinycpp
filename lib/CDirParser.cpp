@@ -28,11 +28,10 @@ bool CDirParser::open(const char *directory, int flags)
 {
     close();
 
-    _flags = flags;
-    //_dirlen = strlen(directory);
-
-    if (!_flags /*|| _dirlen < 1*/)
+    if (!flags)
         return false;
+
+    _flags = flags;
 
     CDirent *entry = new CDirent();
 
@@ -47,8 +46,6 @@ bool CDirParser::open(const char *directory, int flags)
 
     return true;
 }
-
-//int g_count = 250;
 
 bool CDirParser::read(CString &filepath, int* /*type*/)
 {

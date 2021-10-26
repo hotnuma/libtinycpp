@@ -12,6 +12,15 @@ CFile::~CFile()
     close();
 }
 
+bool CFile::open(const char *filepath, const char *mode)
+{
+    close();
+
+    _fp = fopen(filepath, mode);
+
+    return (_fp != nullptr);
+}
+
 void CFile::flush()
 {
     if (_fp)
@@ -25,15 +34,6 @@ void CFile::close()
 
     _fp = nullptr;
     _curr = nullptr;
-}
-
-bool CFile::open(const char *filepath, const char *mode)
-{
-    close();
-
-    _fp = fopen(filepath, mode);
-
-    return (_fp != nullptr);
 }
 
 bool CFile::read(const char *filepath)
@@ -65,6 +65,15 @@ bool CFile::read(const char *filepath)
     return true;
 }
 
+void CFile::write(const char *str)
+{
+    if (!_fp || !str)
+        return;
+
+    fwrite(str, strlen(str), 1, _fp);
+}
+
+// static write.
 bool CFile::write(const char *filepath, const CString &buffer)
 {
     FILE *fp = fopen(filepath, "wb");
@@ -76,8 +85,6 @@ bool CFile::write(const char *filepath, const CString &buffer)
     size_t size = buffer.size();
 
     size_t ret = fwrite(buff, 1, size, fp);
-
-    //print("size = %d", ret);
 
     if (ret != size)
     {
@@ -91,14 +98,6 @@ bool CFile::write(const char *filepath, const CString &buffer)
     return true;
 }
 
-void CFile::write(const char *str)
-{
-    if (!_fp || !str)
-        return;
-
-    fwrite(str, strlen(str), 1, _fp);
-}
-
 void CFile::operator<<(const char *str)
 {
     if (!_fp || !str)
@@ -107,124 +106,12 @@ void CFile::operator<<(const char *str)
     fwrite(str, strlen(str), 1, _fp);
 }
 
-#if 0
-bool CFile::getLinePtr(char **result, int *length)
-{
-    if (!_curr)
-        return false;
-
-    // start of line.
-    char *first = _curr;
-
-    // end of buffer ?
-    if (*first == '\0')
-        return false;
-
-    // search end of line.
-    char *p = first;
-
-    while (1)
-    {
-        if (*p == '\r')
-        {
-            *result = first;
-            *length = p - first;
-
-            // skip.
-            if (p[1] == '\n')
-                ++p;
-
-            // move to next line.
-            _curr = ++p;
-
-            return true;
-        }
-        else if (*p == '\n')
-        {
-            *result = first;
-            *length = p - first;
-
-            // move to next line.
-            _curr = ++p;
-
-            return true;
-        }
-        else if (*p == '\0')
-        {
-            *result = first;
-            *length = p - first;
-
-            // move to the end.
-            _curr = p;
-
-            return true;
-        }
-
-        ++p;
-    }
-}
-#endif
-
 bool CFile::getLine(CString &result)
 {
     if (!_curr)
         return false;
 
     return strGetLine(&_curr, result);
-
-#if 0
-
-    // start of line.
-    char *first = _curr;
-
-    // end of buffer ?
-    if (*first == '\0')
-        return false;
-
-    // search end of line.
-    char *p = first;
-
-    while (1)
-    {
-        if (*p == '\r')
-        {
-            result.clear();
-            result.append(first, p - first);
-
-            // skip.
-            if (p[1] == '\n')
-                ++p;
-
-            // move to next line.
-            _curr = ++p;
-
-            return true;
-        }
-        else if (*p == '\n')
-        {
-            result.clear();
-            result.append(first, p - first);
-
-            // move to next line.
-            _curr = ++p;
-
-            return true;
-        }
-        else if (*p == '\0')
-        {
-            result.clear();
-            result.append(first, p - first);
-
-            // move to the end.
-            _curr = p;
-
-            return true;
-        }
-
-        ++p;
-    }
-#endif
-
 }
 
 

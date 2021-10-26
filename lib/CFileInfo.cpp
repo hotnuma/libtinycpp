@@ -44,8 +44,6 @@ uint64_t CFileInfo::mtime()
 
     struct timespec ts = _sb.st_mtim;
 
-    //return (ts.tv_sec * 1000) + (lround(ts.tv_nsec / 1.0e6));
-    
     return (uint64_t) (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 }
 

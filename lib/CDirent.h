@@ -2,7 +2,7 @@
 #define CDIRENT_H
 
 #include "CString.h"
-#include "dirent.h"
+#include <dirent.h>
 
 class CDirent
 {
@@ -16,8 +16,6 @@ public:
     void close();
     bool read(CString &result, int *type = nullptr);
     const CString& directory() {return _basedir;}
-
-    //const char* directoryPtr() {return _basedir.c_str();}
 
 private:
 

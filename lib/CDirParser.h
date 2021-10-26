@@ -29,7 +29,6 @@ private:
 
     int _flags = CDP_NODE;
     int _dirlen = 0;
-    //bool _endslash = false;
 
 };
 

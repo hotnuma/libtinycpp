@@ -3,11 +3,11 @@
 
 #include "CString.h"
 
-#define CPF_NONE     0x00
-#define CPF_PIPEIN   0x01
-#define CPF_PIPEOUT  0x02
-#define CPF_PIPEERR  0x04
-//#define CPF_MERGEERR 0x08
+#define CP_NONE     0x00
+#define CP_PIPEIN   0x01
+#define CP_PIPEOUT  0x02
+#define CP_PIPEERR  0x04
+#define CP_MERGEERR 0x08
 
 #define CPH_INVALID    -1
 #define CPH_OUT         0
@@ -20,7 +20,7 @@ public:
     CProcess();
     ~CProcess();
 
-    bool start(const char *cmd, int flags = CPF_NONE);
+    bool start(const char *cmd, int flags = CP_NONE);
     int exitStatus() {return _exitStatus;}
 
     CString inBuff;
@@ -28,8 +28,6 @@ public:
     CString errBuff;
 
 private:
-
-    //int _flags = CPF_NONE;
 
     int _inPipe[2] = {CPH_INVALID};
     int _outPipe[2] = {CPH_INVALID};

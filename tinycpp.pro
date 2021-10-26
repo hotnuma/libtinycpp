@@ -7,6 +7,8 @@ DEFINES =
 INCLUDEPATH =
 
 HEADERS += \
+    lib/CDirent.h \
+    lib/CDirParser.h \
     lib/CFile.h \
     lib/CFileInfo.h \
     lib/CIniFile.h \
@@ -14,29 +16,22 @@ HEADERS += \
     lib/CIniSection.h \
     lib/CList.h \
     lib/CProcess.h \
-    lib/CRegKey.h \
+    lib/CRegExp.h \
     lib/CString.h \
     lib/CStringList.h \
+    lib/deletefunc.h \
     lib/libapp.h \
     lib/libconv.h \
     lib/libfile.h \
+    lib/libhtml.h \
     lib/libpath.h \
+    lib/libstr.h \
     lib/libtest.h \
     lib/print.h \
-    lib/wdirent.h \
-    lib/CRegExp.h \
-    lib/libstr.h \
-    lib/libhtml.h \
-    lib/CDirParser.h \
-    lib/CDirent.h \
-    lib/deletefunc.h \
 
 SOURCES += \
-    lib/CRegExp.cpp \
-    lib/libstr.cpp \
-    lib/libhtml.cpp \
-    lib/CDirParser.cpp \
     lib/CDirent.cpp \
+    lib/CDirParser.cpp \
     lib/CFile.cpp \
     lib/CFileInfo.cpp \
     lib/CIniFile.cpp \
@@ -44,18 +39,17 @@ SOURCES += \
     lib/CIniSection.cpp \
     lib/CList.cpp \
     lib/CProcess.cpp \
-    lib/CRegKey.cpp \
+    lib/CRegExp.cpp \
     lib/CString.cpp \
     lib/CStringList.cpp \
     lib/libapp.cpp \
     lib/libconv.cpp \
     lib/libfile.cpp \
+    lib/libhtml.cpp \
     lib/libpath.cpp \
+    lib/libstr.cpp \
     lib/libtest.cpp \
     lib/print.cpp \
-    lib/wdirent.cpp \
-    samples/file_read.cpp \
-    samples/proc_cpuinfos.cpp \
     tests/test_CDirent.cpp \
     tests/test_CDirParser.cpp \
     tests/test_CFile.cpp \
@@ -69,13 +63,13 @@ SOURCES += \
     tests/test_libfile.cpp \
     tests/test_libpath.cpp \
     tests/test_strfuncs.cpp \
-    test_main.cpp \
     0Temp.cpp \
     main.cpp \
+    test_main.cpp \
 
 DISTFILES += \
     install.sh \
     meson.build \
-    readme.txt \
+    Readme.txt \
 
 
