@@ -62,6 +62,34 @@ bool strGetPart(char **start, char **result, int *length)
     }
 }
 
+CString strBaseName(const char *path)
+{
+    CString result(64);
+
+    if (!path)
+        return result;
+
+    const char *p = path;
+
+    while (1)
+    {
+        if (*p == '/')
+        {
+            path = ++p;
+            continue;
+        }
+        else if (*p == ' ' || *p == '\0')
+        {
+            int length = p - path;
+            result.append(path, length);
+
+            return result;
+        }
+
+        ++p;
+    }
+}
+
 char* stristr(const char *haystack, const char *needle)
 {
     char *pptr  = (char *) needle;   /* Pattern to search for    */

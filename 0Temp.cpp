@@ -1,5 +1,22 @@
 #if 0
 
+CString pathFileName(const char *path)
+{
+    int length = strlen(path);
+    const char *str = path + length;
+
+    const char *last = pathLastSep(path);
+
+    if (last && last < str)
+    {
+        ++last;
+        length = strlen(last);
+        str = last;
+    }
+
+    return CString(str, length);
+}
+
 void closeHandlePtr(void **ptr)
 {
     if (!ptr || !*ptr)

@@ -76,7 +76,7 @@ CString pathBaseName(const char *path)
 {
     CString result(64);
 
-    if (!path)
+    if (!path || !*path)
         return result;
 
     const char *p = path;
@@ -88,7 +88,7 @@ CString pathBaseName(const char *path)
             path = ++p;
             continue;
         }
-        else if (*p == ' ' || *p == '\0')
+        else if (*p == '\0')
         {
             int length = p - path;
             result.append(path, length);
@@ -99,23 +99,6 @@ CString pathBaseName(const char *path)
         ++p;
     }
 }
-
-//CString pathFileName(const char *path)
-//{
-//    int length = strlen(path);
-//    const char *str = path + length;
-
-//    const char *last = pathLastSep(path);
-
-//    if (last && last < str)
-//    {
-//        ++last;
-//        length = strlen(last);
-//        str = last;
-//    }
-
-//    return CString(str, length);
-//}
 
 int _strdirlen(const char *str)
 {

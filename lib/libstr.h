@@ -10,6 +10,7 @@
 
 CString strCurrentTime(const char *fmt);
 bool strGetPart(char **start, char **result, int *length);
+CString strBaseName(const char *path);
 
 char* stristr(const char *haystack, const char *needle);
 char* strrstr(const char *haystack, const char *needle);
