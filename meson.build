@@ -90,7 +90,7 @@ tinytest_sources = [
     'tests/test_CStringList.cpp',
     'tests/test_libapp.cpp',
     'tests/test_libpath.cpp',
-    'tests/test_strfuncs.cpp',
+    'tests/test_libstr.cpp',
     'test_main.cpp',
 ]
 

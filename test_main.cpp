@@ -30,7 +30,7 @@ void _createFile(const char *filepath)
 
 int main()
 {
-    struct stat st; // = {0};
+    struct stat st;
 
     if (stat(_testroot, &st) == -1)
     {
