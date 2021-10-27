@@ -86,6 +86,7 @@ tinytest_sources = [
     'tests/test_CFileInfo.cpp',
     'tests/test_CIniFile.cpp',
     'tests/test_CList.cpp',
+    'tests/test_CProcess.cpp',
     'tests/test_CString.cpp',
     'tests/test_CStringList.cpp',
     'tests/test_libapp.cpp',

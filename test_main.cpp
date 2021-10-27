@@ -15,7 +15,7 @@ void test_CDirParser();
 void test_CFile();
 void test_CFileInfo();
 void test_CIniFile();
-//void test_CProcess();
+void test_CProcess();
 void test_libapp();
 void test_libpath();
 void test_strfuncs();
@@ -64,7 +64,7 @@ int main()
     RUN(test_CFile);
     RUN(test_CFileInfo);
     RUN(test_CIniFile);
-    //RUN(test_CProcess);
+    RUN(test_CProcess);
 
     return TEST_REPORT();
 }
