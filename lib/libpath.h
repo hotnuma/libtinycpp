@@ -10,6 +10,7 @@ const char* pathExt(const char *str);
 
 int pathCmp(const char *s1, const char *s2);
 
+CString pathStripExt(const char *path);
 CString pathDirName(const char *path);
 CString pathBaseName(const char *path);
 CString pathJoin(const char *dir, const char *file);

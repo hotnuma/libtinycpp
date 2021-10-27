@@ -8,9 +8,6 @@
 
 void test_strfuncs()
 {
-    CString time = strCurrentTime("%Y");
-    ASSERT(time.compare("1980") > 0);
-
 //    CString filepath = strFmt("%s\\%s", _testroot, "\\streol.txt");
 //    CFile file;
 //    file.read(filepath);

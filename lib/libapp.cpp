@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <pwd.h>
 #include <wordexp.h>
 
@@ -80,6 +81,22 @@ CString getUserName()
     {
         result = pw->pw_name;
     }
+
+    return result;
+}
+
+CString getCurrentTime(const char *fmt)
+{
+    time_t rawtime;
+    struct tm *info;
+    CString result(80);
+
+    time(&rawtime);
+
+    info = localtime(&rawtime);
+
+    strftime(result.data(), result.capacity(), fmt, info);
+    result.terminate();
 
     return result;
 }

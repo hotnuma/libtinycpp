@@ -9,29 +9,33 @@
 void test_libpath()
 {
     CString filepath(64);
-    const char *part = nullptr;
+    const char *pstr = nullptr;
 
     filepath = "/a/b.c/file";
 
-    part = pathExt(filepath);
-    ASSERT(!part);
+    pstr = pathExt(filepath);
+    ASSERT(!pstr);
 
-    filepath = "/a/b.c/file.tar.gz";
+    filepath = "/a/b.c/.file.tar.gz";
 
-    part = pathExt(filepath);
-    ASSERT(strcmp(part, ".tar.gz") == 0);
+    pstr = pathExt(filepath);
+    ASSERT(strcmp(pstr, ".tar.gz") == 0);
 
-    part = pathSep(filepath);
-    ASSERT(strcmp(part, "/file.tar.gz") == 0);
+    pstr = pathSep(filepath);
+    ASSERT(strcmp(pstr, "/.file.tar.gz") == 0);
 
     CString result;
+
+    result = pathStripExt(filepath);
+    ASSERT(result.compare("/a/b.c/.file") == 0);
 
     result = pathDirName(filepath);
     ASSERT(result.compare("/a/b.c") == 0);
 
     result = pathBaseName(filepath);
-    ASSERT(result.compare("file.tar.gz") == 0);
+    ASSERT(result.compare(".file.tar.gz") == 0);
 
+    // join.
     result = pathJoin("/", "bla");
     ASSERT(result.compare("/bla") == 0);
 

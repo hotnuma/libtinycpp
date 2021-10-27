@@ -32,6 +32,9 @@ void test_libapp()
     fileRemove(filepath);
     ASSERT(!fileExists(filepath));
 
+    CString time = getCurrentTime("%Y");
+    ASSERT(time.compare("1980") > 0);
+
 //    path = getApplicationDir();
 //    ASSERT(strncmp(_testroot, path.c_str(), path.size() - 6) == 0);
 

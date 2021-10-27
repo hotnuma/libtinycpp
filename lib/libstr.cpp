@@ -1,25 +1,7 @@
 #include "libstr.h"
 
-#include <stdlib.h>
 #include <ctype.h>
-#include <time.h>
 #include <string.h>
-
-CString strCurrentTime(const char *fmt)
-{
-    time_t rawtime;
-    struct tm *info;
-    CString result(80);
-
-    time(&rawtime);
-
-    info = localtime(&rawtime);
-
-    strftime(result.data(), result.capacity(), fmt, info);
-    result.terminate();
-
-    return result;
-}
 
 bool strGetPart(char **start, char **result, int *length)
 {

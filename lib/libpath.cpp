@@ -49,6 +49,20 @@ const char* pathExt(const char *path)
     return nullptr;
 }
 
+CString pathStripExt(const char *path)
+{
+    CString result(128);
+
+    const char *dot = pathExt(path);
+
+    if (!dot)
+        return result;
+
+    result.append(path, dot - path);
+
+    return result;
+}
+
 CString pathDirName(const char *path)
 {
     CString result(128);
