@@ -44,19 +44,21 @@ bool strGetPart(char **start, char **result, int *length)
     }
 }
 
-bool strEllipsize(CString &str, int length)
+bool strEllipsize(CString &str, int length, const char *part)
 {
-    if (length < 4)
+    int partlen = strlen(part);
+
+    if (length < 2 || partlen < 1 || length <= partlen)
         return false;
 
     int size = str.size();
 
     if (size <= length)
-        return false;
+        return true;
 
-    length -= 3;
+    length -= partlen;
     str.terminate(length);
-    str.append("...");
+    str.append(part);
 
     return true;
 }

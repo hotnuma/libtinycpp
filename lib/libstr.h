@@ -10,7 +10,7 @@
 
 bool strGetPart(char **start, char **result, int *length);
 
-bool strEllipsize(CString &str, int length);
+bool strEllipsize(CString &str, int length, const char *part = "...");
 bool strPadLeft(CString &str, int length, char c);
 bool strPadRight(CString &str, int length, char c);
 

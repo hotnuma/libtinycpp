@@ -59,10 +59,10 @@ SOURCES += \
     tests/test_CStringList.cpp \
     tests/test_libapp.cpp \
     tests/test_libpath.cpp \
+    tests/test_libstr.cpp \
     0Temp.cpp \
     main.cpp \
     test_main.cpp \
-    tests/test_libstr.cpp
 
 DISTFILES += \
     install.sh \
