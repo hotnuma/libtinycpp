@@ -10,6 +10,10 @@
 
 bool strGetPart(char **start, char **result, int *length);
 
+bool strEllipsize(CString &str, int length);
+bool strPadLeft(CString &str, int length, char c);
+bool strPadRight(CString &str, int length, char c);
+
 CString strBaseName(const char *path);
 
 char* stristr(const char *haystack, const char *needle);

@@ -44,6 +44,62 @@ bool strGetPart(char **start, char **result, int *length)
     }
 }
 
+bool strEllipsize(CString &str, int length)
+{
+    if (length < 4)
+        return false;
+
+    int size = str.size();
+
+    if (size <= length)
+        return false;
+
+    length -= 3;
+    str.terminate(length);
+    str.append("...");
+
+    return true;
+}
+
+bool strPadLeft(CString &str, int length, char c)
+{
+    int size = str.size();
+
+    if (size < 1 || length < 1 || length <= size)
+        return false;
+
+    CString result(length + 1);
+
+    int delta = length - size;
+
+    for (int i = 0; i < delta; ++i)
+    {
+        result.append(c);
+    }
+
+    result.append(str);
+    result.swap(str);
+
+    return true;
+}
+
+bool strPadRight(CString &str, int length, char c)
+{
+    int delta = length - str.size();
+
+    if (length < 1 || delta < 1)
+        return false;
+
+    str.resize(length + 1);
+
+    for (int i = 0; i < delta; ++i)
+    {
+        str.append(c);
+    }
+
+    return true;
+}
+
 CString strBaseName(const char *path)
 {
     CString result(64);
