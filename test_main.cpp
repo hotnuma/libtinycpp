@@ -6,19 +6,21 @@
 
 #define _testroot "/tmp/tinycpp_tests"
 
-void test_CString();
-void test_CList();
-void test_CStringList();
-
 void test_CDirent();
 void test_CDirParser();
 void test_CFile();
 void test_CFileInfo();
 void test_CIniFile();
+void test_CList();
 void test_CProcess();
+//void test_CRegExp();
+void test_CString();
+void test_CStringList();
 void test_libapp();
+//void test_libconv();
+//void test_libhtml();
 void test_libpath();
-void test_strfuncs();
+void test_libstr();
 
 void _createFile(const char *filepath)
 {
@@ -56,8 +58,10 @@ int main()
     RUN(test_CStringList);
 
     RUN(test_libapp);
+    //RUN(test_libconv);
+    //RUN(test_libhtml);
     RUN(test_libpath);
-    RUN(test_strfuncs);
+    RUN(test_libstr);
 
     RUN(test_CDirent);
     RUN(test_CDirParser);
@@ -65,6 +69,7 @@ int main()
     RUN(test_CFileInfo);
     RUN(test_CIniFile);
     RUN(test_CProcess);
+    //RUN(test_CRegExp);
 
     return TEST_REPORT();
 }

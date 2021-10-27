@@ -4,15 +4,11 @@
 #include "CFile.h"
 #include "print.h"
 
-//CString utf8wrap(const char *str, int num);
-
-void test_strfuncs()
+void test_libstr()
 {
-//    CString filepath = strFmt("%s\\%s", _testroot, "\\streol.txt");
-//    CFile file;
-//    file.read(filepath);
-//    int eol = streol(file);
-//    ASSERT(eol == STREOL_CR);
+    const char *str1 = "bla\r\nble\r\nblie\r\n";
+    int eol = streol(str1);
+    ASSERT(eol == STREOL_CRLF);
 
     int len = utf8len("éèà");
     ASSERT(len == 3);
