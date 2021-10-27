@@ -1,5 +1,4 @@
 #include "libapp.h"
-
 #include "libpath.h"
 
 #include <stdio.h>
@@ -85,99 +84,67 @@ CString getUserName()
     return result;
 }
 
+bool dirExists(const char *fileName)
+{
+    struct stat st;
+    int result = stat(fileName, &st);
+
+    return (result == 0 && (st.st_mode & S_IFDIR));
+}
+
+bool fileExists(const char *fileName)
+{
+    struct stat st;
+    int result = stat(fileName, &st);
+
+    return (result == 0 && (st.st_mode & S_IFREG));
+}
+
+bool fileRemove(const char *fileName)
+{
+    return (remove(fileName) == 0);
+}
+
 int pexec(const char *cmd)
 {
+    if (!cmd || !*cmd)
+        return EXIT_FAILURE;
+
+    wordexp_t p;
+    wordexp(cmd, &p, 0);
+    char **w = p.we_wordv;
+
     pid_t childpid = fork();
 
     if (childpid < 0)
     {
-        perror("failed to fork.");
-        return -1;
-    }
+        //perror("failed to fork.");
 
-    if (childpid == 0)
+        wordfree(&p);
+
+        return EXIT_FAILURE;
+    }
+    else if (childpid == 0)
     {
         umask(0);
         setsid();
 
-        if ((chdir("/")) < 0)
-            exit(-1);
+        if (chdir("/") < 0)
+            exit(EXIT_FAILURE);
 
         // close out the standard file descriptors.
         close(STDIN_FILENO);
         close(STDOUT_FILENO);
         close(STDERR_FILENO);
 
-        if (!cmd || !*cmd)
-            exit(-1);
+        execve(w[0], (char**) w, __environ);
 
-        wordexp_t p;
-        wordexp(cmd, &p, 0);
-
-        char **w = p.we_wordv;
-
-        if (execve(w[0], (char**) w, __environ) == -1)
-            perror("could not execve...");
-
-        wordfree(&p);
-
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
-    return 1;
+    wordfree(&p);
+
+    return EXIT_SUCCESS;
 }
-
-CString argsToCString(int argc, char **argv)
-{
-    CString result(64);
-    result.terminate(1);
-    int size = 0;
-
-    for (int i = 0; i < argc; ++i)
-    {
-        char *arg = argv[i];
-        int len = strlen(arg);
-
-        if (len < 1)
-            continue;
-
-        result.resize(size + len + 2);
-        char *p = result.data() + size;
-        strcpy(p, arg);
-        size += len + 1;
-    }
-
-    if (size < 1)
-        return result;
-
-    result.resize(size + 1);
-    result.terminate(size);
-
-    return result;
-}
-
-
-#if 0
-
-bool isFirstInstance(const wchar_t *guid)
-{
-    return true;
-}
-
-CString getWindowsDirectory()
-{
-    CString result(100);
-
-    return result;
-}
-
-CStringList getLogicalDrives()
-{
-    CStringList result;
-
-    return result;
-}
-
-#endif
 
 

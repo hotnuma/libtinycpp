@@ -22,7 +22,6 @@ HEADERS += \
     lib/deletefunc.h \
     lib/libapp.h \
     lib/libconv.h \
-    lib/libfile.h \
     lib/libhtml.h \
     lib/libpath.h \
     lib/libstr.h \
@@ -44,7 +43,6 @@ SOURCES += \
     lib/CStringList.cpp \
     lib/libapp.cpp \
     lib/libconv.cpp \
-    lib/libfile.cpp \
     lib/libhtml.cpp \
     lib/libpath.cpp \
     lib/libstr.cpp \
@@ -60,7 +58,6 @@ SOURCES += \
     tests/test_CString.cpp \
     tests/test_CStringList.cpp \
     tests/test_libapp.cpp \
-    tests/test_libfile.cpp \
     tests/test_libpath.cpp \
     tests/test_strfuncs.cpp \
     0Temp.cpp \

@@ -1,6 +1,7 @@
-#include "lib/CFile.h"
-#include "lib/libtest.h"
-#include "lib/libfile.h"
+#include "CFile.h"
+#include "libtest.h"
+
+#include "libapp.h"
 
 #define _testfile "/tmp/tinycpp_cfile.txt"
 

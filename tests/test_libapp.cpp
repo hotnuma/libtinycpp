@@ -3,6 +3,9 @@
 #include "libtest.h"
 #include "CString.h"
 
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <string.h>
 
 // untested
@@ -15,6 +18,19 @@ void test_libapp()
 {
     CString path = getApplicationPath();
     ASSERT(path.endsWith("/tinytest"));
+
+    ASSERT(dirExists("/tmp"));
+
+    CString filepath = "/tmp/tinycpp_test.txt";
+
+    int fd = open(filepath, O_RDWR|O_CREAT, 0777);
+    if (fd != -1)
+        close(fd);
+
+    ASSERT(fileExists(filepath));
+
+    fileRemove(filepath);
+    ASSERT(!fileExists(filepath));
 
 //    path = getApplicationDir();
 //    ASSERT(strncmp(_testroot, path.c_str(), path.size() - 6) == 0);

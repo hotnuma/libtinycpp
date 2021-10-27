@@ -1,5 +1,38 @@
 #if 0
 
+//-------------------------------------------------------------------
+
+CString argsToCString(int argc, char **argv)
+{
+    CString result(64);
+    result.terminate(1);
+    int size = 0;
+
+    for (int i = 0; i < argc; ++i)
+    {
+        char *arg = argv[i];
+        int len = strlen(arg);
+
+        if (len < 1)
+            continue;
+
+        result.resize(size + len + 2);
+        char *p = result.data() + size;
+        strcpy(p, arg);
+        size += len + 1;
+    }
+
+    if (size < 1)
+        return result;
+
+    result.resize(size + 1);
+    result.terminate(size);
+
+    return result;
+}
+
+//-------------------------------------------------------------------
+
 int _strdirlen(const char *str)
 {
     if (!str)
@@ -56,16 +89,6 @@ char _strgetsep(const char *str)
     return sep;
 }
 
-// Path separator.
-bool pathIsSep(char c)
-{
-#ifdef _WIN32
-    return c == '/' || c == '\\';
-#else
-    return c == '/';
-#endif
-}
-
 const char* pathLastSep(const char *str, int len)
 {
     if (!str)
@@ -101,7 +124,24 @@ CString pathDirName(const char *path)
     return CString(path, length);
 }
 
-CString getApplicationDir_old()
+CString pathFileName(const char *path)
+{
+    int length = strlen(path);
+    const char *str = path + length;
+
+    const char *last = pathLastSep(path);
+
+    if (last && last < str)
+    {
+        ++last;
+        length = strlen(last);
+        str = last;
+    }
+
+    return CString(str, length);
+}
+
+CString getApplicationDir()
 {
     CString path = getApplicationPath();
     int len = path.size();
@@ -122,70 +162,6 @@ CString getApplicationDir_old()
 
     return path;
 }
-
-CString pathFileName(const char *path)
-{
-    int length = strlen(path);
-    const char *str = path + length;
-
-    const char *last = pathLastSep(path);
-
-    if (last && last < str)
-    {
-        ++last;
-        length = strlen(last);
-        str = last;
-    }
-
-    return CString(str, length);
-}
-
-void closeHandlePtr(void **ptr)
-{
-    if (!ptr || !*ptr)
-        return;
-
-    ::CloseHandle(*ptr);
-    *ptr = nullptr;
-}
-
-static int _readPipe(void *handle, CString &outBuff)
-{
-    if (!handle)
-        return -1;
-
-    DWORD avail;
-    if (!::PeekNamedPipe(handle, 0, 0, 0, &avail, 0))
-    {
-        //print("peek broken");
-        return 0;
-    }
-
-    if (!avail)
-        return 1;
-
-    //print("peek = %i", avail);
-
-    int length = outBuff.size();
-    outBuff.resize(length + avail + 1);
-
-    char *buff = outBuff.data() + length;
-    DWORD numRead;
-
-    if (!::ReadFile(handle, buff, avail, &numRead, 0))
-    {
-        //print("read broken");
-        return 0;
-    }
-
-    int num = (numRead < avail) ? numRead : avail;
-    outBuff.terminate(length + num);
-
-    //print("read = %i", numRead);
-
-    return 1;
-}
-
 
 #endif
 

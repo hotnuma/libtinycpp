@@ -1,12 +1,9 @@
-//#define __STDC_FORMAT_MACROS
-//#include <inttypes.h>
-
 #include "lib/libtest.h"
 
 #include "lib/CString.h"
 #include "lib/CFile.h"
 #include "lib/CFileInfo.h"
-#include "lib/libfile.h"
+#include "libapp.h"
 
 #include <string.h>
 
