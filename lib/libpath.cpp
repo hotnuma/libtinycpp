@@ -10,29 +10,28 @@ const char* pathSep(const char *path)
 
     const char *sep = nullptr;
 
-    while (1)
+    while (*path)
     {
         if (*path == '/')
-        {
             sep = path;
-        }
-        else if (*path == '\0')
-        {
-            return sep;
-        }
 
         ++path;
     }
+
+    return sep;
 }
 
 const char* pathExt(const char *path)
 {
-    path = pathSep(path);
+    const char *sep = pathSep(path);
 
-    if (!path || path[1] == '\0')
-        return nullptr;
+    if (sep)
+    {
+        path = ++sep;
 
-    ++path;
+        if (*path == '\0')
+            return nullptr;
+    }
 
     // hidden file.
     if (*path == '.')
@@ -56,7 +55,10 @@ CString pathStripExt(const char *path)
     const char *dot = pathExt(path);
 
     if (!dot)
+    {
+        result.append(path);
         return result;
+    }
 
     result.append(path, dot - path);
 

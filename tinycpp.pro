@@ -58,6 +58,7 @@ SOURCES += \
     tests/test_CString.cpp \
     tests/test_CStringList.cpp \
     tests/test_libapp.cpp \
+    tests/test_libhtml.cpp \
     tests/test_libpath.cpp \
     tests/test_libstr.cpp \
     0Temp.cpp \

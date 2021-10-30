@@ -18,7 +18,7 @@ void test_CString();
 void test_CStringList();
 void test_libapp();
 //void test_libconv();
-//void test_libhtml();
+void test_libhtml();
 void test_libpath();
 void test_libstr();
 
@@ -59,7 +59,7 @@ int main()
 
     RUN(test_libapp);
     //RUN(test_libconv);
-    //RUN(test_libhtml);
+    RUN(test_libhtml);
     RUN(test_libpath);
     RUN(test_libstr);
 

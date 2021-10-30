@@ -7,22 +7,18 @@
 
 bool htmlGetTag(const char *buffer, const char **tag, int *length)
 {
-    if (!buffer || buffer[0] != '<' || !isalpha(buffer[1]))
+    if (!buffer || *buffer != '<' || !isalpha(buffer[1]))
         return false;
 
-    const char *start = ++buffer;
-    const char *p = start;
+    const char *p = ++buffer;
 
     while (isalpha(*p)) ++p;
 
-    int len = p - start;
-    if (len < 0 || len > 12 || (*p != ' ' && *p != '>'))
+    int len = p - buffer;
+    if (len < 1 || len > 12 || (*p != ' ' && *p != '>'))
         return false;
 
-    //tag.clear();
-    //tag.append(start, len);
-
-    *tag = start;
+    *tag = buffer;
     *length = len;
 
     return true;

@@ -26,14 +26,18 @@ void test_libpath()
 
     CString result;
 
-    result = pathStripExt(filepath);
-    ASSERT(result.compare("/a/b.c/.file") == 0);
-
     result = pathDirName(filepath);
     ASSERT(result.compare("/a/b.c") == 0);
 
     result = pathBaseName(filepath);
     ASSERT(result.compare(".file.tar.gz") == 0);
+
+    result = pathStripExt(filepath);
+    ASSERT(result.compare("/a/b.c/.file") == 0);
+
+    filepath = ".file.txt";
+    result = pathStripExt(filepath);
+    ASSERT(result.compare(".file") == 0);
 
     // join.
     result = pathJoin("/", "bla");
