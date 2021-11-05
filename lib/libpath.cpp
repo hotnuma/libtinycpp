@@ -21,7 +21,7 @@ const char* pathSep(const char *path)
     return sep;
 }
 
-const char* pathExt(const char *path)
+const char* pathExt(const char *path, bool first)
 {
     const char *sep = pathSep(path);
 
@@ -37,15 +37,22 @@ const char* pathExt(const char *path)
     if (*path == '.')
         ++path;
 
+    const char *found = nullptr;
+
     while (*path)
     {
-        if (*path == '.')
-            return path;
+        if (*path == '.' && path[1] != '\0')
+        {
+            found = path;
+
+            if (first)
+                return found;
+        }
 
         ++path;
     }
 
-    return nullptr;
+    return found;
 }
 
 CString pathStripExt(const char *path)

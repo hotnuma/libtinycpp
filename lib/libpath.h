@@ -6,7 +6,7 @@
 #define PATHSEP '/'
 
 const char* pathSep(const char *path);
-const char* pathExt(const char *str);
+const char* pathExt(const char *path, bool first = true);
 
 int pathCmp(const char *s1, const char *s2);
 

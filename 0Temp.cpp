@@ -2,6 +2,33 @@
 
 //-------------------------------------------------------------------
 
+const char* pathExt(const char *path)
+{
+    const char *sep = pathSep(path);
+
+    if (sep)
+    {
+        path = ++sep;
+
+        if (*path == '\0')
+            return nullptr;
+    }
+
+    // hidden file.
+    if (*path == '.')
+        ++path;
+
+    while (*path)
+    {
+        if (*path == '.')
+            return path;
+
+        ++path;
+    }
+
+    return nullptr;
+}
+
 CString argsToCString(int argc, char **argv)
 {
     CString result(64);

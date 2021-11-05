@@ -11,18 +11,21 @@ void test_libpath()
     CString filepath(64);
     const char *pstr = nullptr;
 
-    filepath = "/a/b.c/file";
+    filepath = "/a/b.c/.file";
 
     pstr = pathExt(filepath);
     ASSERT(!pstr);
 
     filepath = "/a/b.c/.file.tar.gz";
 
+    pstr = pathSep(filepath);
+    ASSERT(strcmp(pstr, "/.file.tar.gz") == 0);
+
     pstr = pathExt(filepath);
     ASSERT(strcmp(pstr, ".tar.gz") == 0);
 
-    pstr = pathSep(filepath);
-    ASSERT(strcmp(pstr, "/.file.tar.gz") == 0);
+    pstr = pathExt(filepath, false);
+    ASSERT(strcmp(pstr, ".gz") == 0);
 
     CString result;
 
