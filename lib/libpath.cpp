@@ -55,21 +55,16 @@ const char* pathExt(const char *path, bool first)
     return found;
 }
 
-CString pathStripExt(const char *path)
+bool pathStripExt(CString &path)
 {
-    CString result(128);
-
-    const char *dot = pathExt(path);
+    const char *p = path.c_str();
+    const char *dot = pathExt(p);
 
     if (!dot)
-    {
-        result.append(path);
-        return result;
-    }
+        return false;
 
-    result.append(path, dot - path);
-
-    return result;
+    path.terminate(dot - path);
+    return true;
 }
 
 CString pathDirName(const char *path)

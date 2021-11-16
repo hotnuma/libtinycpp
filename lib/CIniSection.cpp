@@ -18,7 +18,7 @@ char* getSection(char *line, int length)
 
     char *start = p;
 
-    while (isalnum(*p)) ++p;
+    while (isalnum(*p) || *p == ' ') ++p;
 
     if (p == start || *p != ']')
         return nullptr;

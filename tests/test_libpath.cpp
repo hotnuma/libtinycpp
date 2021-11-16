@@ -35,11 +35,12 @@ void test_libpath()
     result = pathBaseName(filepath);
     ASSERT(result.compare(".file.tar.gz") == 0);
 
-    result = pathStripExt(filepath);
+    result = filepath;
+    pathStripExt(result);
     ASSERT(result.compare("/a/b.c/.file") == 0);
 
-    filepath = ".file.txt";
-    result = pathStripExt(filepath);
+    result = ".file.txt";
+    pathStripExt(result);
     ASSERT(result.compare(".file") == 0);
 
     // join.
