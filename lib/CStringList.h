@@ -42,6 +42,7 @@ public:
     CString join(const char *sep) const;
     
     void sort(int (*compare)(const void *, const void *));
+    void sort(bool sensitive = true);
 
 private:
 

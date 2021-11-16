@@ -6,6 +6,22 @@
 
 CString g_default = "";
 
+int _compare(const void *entry1, const void *entry2)
+{
+    const CString *e1 = *((CString**) entry1);
+    const CString *e2 = *((CString**) entry2);
+
+    return e1->compare(e2->c_str());
+}
+
+int _icompare(const void *entry1, const void *entry2)
+{
+    const CString *e1 = *((CString**) entry1);
+    const CString *e2 = *((CString**) entry2);
+
+    return e1->compare(e2->c_str(), false);
+}
+
 // construct
 
 CStringList::CStringList()
@@ -292,6 +308,14 @@ CString CStringList::join(const char *sep) const
 void CStringList::sort(int (*compare)(const void *, const void *))
 {
     qsort(_data, size(), sizeof(void*), compare);
+}
+
+void CStringList::sort(bool sensitive)
+{
+    if (sensitive)
+        qsort(_data, size(), sizeof(void*), _compare);
+    else
+        qsort(_data, size(), sizeof(void*), _icompare);
 }
 
 
