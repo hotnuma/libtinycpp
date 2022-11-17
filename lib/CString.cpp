@@ -1,6 +1,8 @@
 #include "CString.h"
+
 #include "CStringList.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
@@ -59,59 +61,6 @@ bool strGetLine(char **start, CString &result)
             result.append(first, p - first);
             //*result = first;
             //*length = p - first;
-
-            // move to the end.
-            *start = p;
-
-            return true;
-        }
-
-        ++p;
-    }
-}
-
-bool strGetLinePtr(char **start, char **result, int *length)
-{
-    // start of line.
-    char *first = *start;
-
-    // end of buffer ?
-    if (*first == '\0')
-        return false;
-
-    // search end of line.
-    char *p = first;
-
-    while (1)
-    {
-        if (*p == '\r')
-        {
-            *result = first;
-            *length = p - first;
-
-            // skip.
-            if (*(p + 1) == '\n')
-                ++p;
-
-            // move to next line.
-            *start = ++p;
-
-            return true;
-        }
-        else if (*p == '\n')
-        {
-            *result = first;
-            *length = p - first;
-
-            // move to next line.
-            *start = ++p;
-
-            return true;
-        }
-        else if (*p == '\0')
-        {
-            *result = first;
-            *length = p - first;
 
             // move to the end.
             *start = p;
@@ -232,6 +181,190 @@ CString uint64ToStr(uint64_t num)
     result.terminate(length);
     return result;
 }
+
+
+bool strEllipsize(CString &str, int length, const char *part)
+{
+    int partlen = strlen(part);
+
+    if (length < 2 || partlen < 1 || length <= partlen)
+        return false;
+
+    int size = str.size();
+
+    if (size <= length)
+        return true;
+
+    length -= partlen;
+    str.terminate(length);
+    str.append(part);
+
+    return true;
+}
+
+bool strPadLeft(CString &str, int length, char c)
+{
+    int size = str.size();
+
+    if (size < 1 || length < 1 || length <= size)
+        return false;
+
+    CString result(length + 1);
+
+    int delta = length - size;
+
+    for (int i = 0; i < delta; ++i)
+    {
+        result.append(c);
+    }
+
+    result.append(str);
+    result.swap(str);
+
+    return true;
+}
+
+bool strPadRight(CString &str, int length, char c)
+{
+    int delta = length - str.size();
+
+    if (length < 1 || delta < 1)
+        return false;
+
+    str.resize(length + 1);
+
+    for (int i = 0; i < delta; ++i)
+    {
+        str.append(c);
+    }
+
+    return true;
+}
+
+CString strBaseName(const char *path)
+{
+    CString result(64);
+
+    if (!path)
+        return result;
+
+    const char *p = path;
+
+    while (1)
+    {
+        if (*p == '/')
+        {
+            path = ++p;
+            continue;
+        }
+        else if (*p == ' ' || *p == '\0')
+        {
+            int length = p - path;
+            result.append(path, length);
+
+            return result;
+        }
+
+        ++p;
+    }
+}
+
+
+void _utf8inc(const char **str, int *count)
+{
+    if ((**str & 0xC0) != 0x80)
+        ++*count;
+    ++*str;
+}
+
+CString utf8wrap(const char *str, int num)
+{
+    CString buffer(100);
+
+    int len = strlen(str);
+    if (len < 1)
+        return buffer;
+
+    buffer = str;
+    //if (buffer[len-1] != '\n')
+    buffer.append('\n');
+
+    CString result(len + 2);
+
+    char *pp = buffer.data();
+
+    while (*pp)
+    {
+        if (*pp == ' ')
+        {
+            char n = *(pp + 1);
+            if (n == '?' || n == '!')
+                *pp = 0x01;
+        }
+        ++pp;
+    }
+
+    const char *p = buffer.data();
+    const char *start = p;
+    const char *end = 0;
+    int ucount = 0;
+
+    while (*p)
+    {
+        if (isspace((unsigned char) *p))
+        {
+            if (ucount > num)
+            {
+                if (!end)
+                    end = p;
+
+                result.append(start, end - start);
+
+                while (isspace((unsigned char) *end))
+                    ++end;
+
+                start = end;
+                end = 0;
+                ucount = 0;
+
+                p = start;
+
+                result.append("\n");
+
+                continue;
+            }
+
+            end = p;
+
+            while (isspace((unsigned char) *p))
+                _utf8inc(&p, &ucount);
+
+            continue;
+        }
+
+        _utf8inc(&p, &ucount);
+    }
+
+    result.append(start, p - start);
+
+    pp = result.data();
+
+    while (*pp)
+    {
+        if (*pp == 0x01)
+            *pp = ' ';
+
+        ++pp;
+    }
+
+    if (result.last() == '\n')
+        result.chop(1);
+
+    return result;
+}
+
+
+
 
 // class ----------------------------------------------------------------------
 

@@ -3,7 +3,7 @@
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#include <stdlib.h>
+
 
 class CString;
 class CStringList;
@@ -20,21 +20,8 @@ class CStringList;
        __typeof__ (b) _b = (b); \
      _a > _b ? _a : _b; })
 
-inline char* stralloc(int size)
-{
-    return (char*) malloc(size * sizeof(char));
-}
-
-inline wchar_t* wcsalloc(int size)
-{
-    return (wchar_t*) malloc(size * sizeof(wchar_t));
-}
-
-// size reserve
-//char* getPtr(CString &buffer, int minchuck);
-
+// parse
 bool strGetLine(char **start, CString &result);
-bool strGetLinePtr(char **start, char **result, int *length);
 
 // edit
 CString strFmt(const char *fmt, ...);
@@ -45,6 +32,16 @@ CString unquote(const char *str);
 // convert
 CString intToStr(int num);
 CString uint64ToStr(uint64_t num);
+
+// format
+bool strEllipsize(CString &str, int length, const char *part = "...");
+bool strPadLeft(CString &str, int length, char c);
+bool strPadRight(CString &str, int length, char c);
+CString utf8wrap(const char *str, int num);
+
+// path
+CString strBaseName(const char *path);
+
 
 class CString
 {

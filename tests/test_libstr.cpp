@@ -1,4 +1,6 @@
 #include "libtest.h"
+
+#include "CString.h"
 #include "libstr.h"
 
 #include <string.h>

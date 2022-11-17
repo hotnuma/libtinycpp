@@ -1,7 +1,8 @@
 #include "CIniFile.h"
-#include "CFile.h"
 
 #include <assert.h>
+#include "CFile.h"
+#include "libstr.h"
 #include "print.h"
 
 //void _deleteSection(CIniSection *section)
