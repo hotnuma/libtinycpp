@@ -29,7 +29,6 @@ public:
     char* data() const {return _buffer.data();}
     int size() const {return _buffer.size();}
 
-
 private:
 
     CString _buffer;

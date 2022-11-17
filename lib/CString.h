@@ -20,7 +20,9 @@ class CStringList;
        __typeof__ (b) _b = (b); \
      _a > _b ? _a : _b; })
 
-// parse
+
+// file read
+bool strFileRead(CString &buffer, const char *filepath);
 bool strGetLine(char **start, CString &result);
 
 // edit

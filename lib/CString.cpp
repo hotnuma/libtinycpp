@@ -3,15 +3,54 @@
 #include "CStringList.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
-
 #include <assert.h>
 
 #define CSTR_INITSIZE 16
 
 // size reserve ---------------------------------------------------------------
+
+bool strFileRead(CString &buffer, const char *filepath)
+{
+    if (buffer.capacity() < 1)
+        return false;
+
+    int fd = open(filepath, O_RDONLY);
+    if (fd < 0)
+        return false;
+
+    while (1)
+    {
+        int capacity = buffer.capacity();
+        int size = buffer.size();
+        int remain = capacity - size;
+
+        while (remain < 2)
+        {
+            capacity *= 2;
+            remain = capacity - size;
+        }
+
+        buffer.resize(capacity);
+        char *buff = buffer.data() + buffer.size();
+
+        int nb_read = read(fd, buff, remain - 1);
+
+        if (nb_read < 1)
+            break;
+
+        buffer.terminate(buffer.size() + nb_read);
+    }
+
+    close(fd);
+
+    return true;
+}
 
 bool strGetLine(char **start, CString &result)
 {
