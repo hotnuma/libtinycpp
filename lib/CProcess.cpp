@@ -7,12 +7,38 @@
 
 #define CHUNCK 1024
 
+char* _getPtr(CString &buffer, int minchuck)
+{
+    int capacity = buffer.capacity();
+    int size = buffer.size();
+
+    if (minchuck < 1)
+        minchuck = 1024;
+
+    if (capacity < 1)
+    {
+        buffer.resize(minchuck * 2);
+        return buffer.data() + buffer.size();
+    }
+
+    while (capacity - (size + 1) < minchuck)
+    {
+        //print("while");
+
+        capacity *= 2;
+    }
+
+    buffer.resize(capacity);
+
+    return buffer.data() + buffer.size();
+}
+
 int _readPipe(int fd, CString &buffer)
 {
     if (fd < 0)
         return -1;
 
-    char *ptr = getPtr(buffer, CHUNCK);
+    char *ptr = _getPtr(buffer, CHUNCK);
     int nb_read = read(fd, ptr, CHUNCK - 1);
 
     if (nb_read < 1)
