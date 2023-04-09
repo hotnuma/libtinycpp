@@ -19,7 +19,7 @@ tinycpp_deps = [
     dependency('libpcre'),
 ]
 
-install_headers(
+tinycpp_headers = [
     'lib/CDirent.h',
     'lib/CDirParser.h',
     'lib/CFile.h',
@@ -40,7 +40,7 @@ install_headers(
     'lib/libstr.h',
     'lib/libtest.h',
     'lib/print.h',
-)
+]
 
 tinycpp_sources = [
     'lib/CDirent.cpp',
@@ -72,11 +72,14 @@ tinycpp = static_library(
     install : true,
 )
 
+install_headers(tinycpp_headers, subdir: 'tinycpp')
+
 pkg_mod = import('pkgconfig')
 pkg_mod.generate(libraries : tinycpp,
                  version : '1.0',
                  name : 'libtinycpp',
                  filebase : 'tinycpp',
+                 subdirs : 'tinycpp',
                  description : 'A simple C++ library.')
 
 tinytest_sources = [
